@@ -1,42 +1,27 @@
-import * as React from 'react';
-import Container from '@mui/material/Container';
-import Typography from '@mui/material/Typography';
-import Box from '@mui/material/Box';
-import Link from '@mui/material/Link';
-import ProTip from './ProTip';
-import Card from '@mui/material/Card';
-
-function Copyright() {
-  return (
-    <Typography
-      variant="body2"
-      align="center"
-      sx={{
-        color: 'text.secondary',
-      }}
-    >
-      {'Copyright © '}
-      <Link color="inherit" href="https://mui.com/">
-        Your Website
-      </Link>{' '}
-      {new Date().getFullYear()}.
-    </Typography>
-  );
-}
+import Box from "@mui/material/Box";
+import "./App.css";
+import BoardSide from "./components/BoardSide";
 
 export default function App() {
-  return (
-    <Container maxWidth="sm">
-      <Card>
-        Test 123
-      </Card>
-      <Box sx={{ my: 4 }}>
-        <Typography variant="h4" component="h1" sx={{ mb: 2 }}>
-          Material UI Vite example in TypeScript
-        </Typography>
-        <ProTip />
-        <Copyright />
-      </Box>
-    </Container>
-  );
+    return (
+        <Box
+            sx={{
+                p: 2,
+                backgroundColor: "lightgray",
+                height: "calc(100% - 32px)",
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "space-between",
+            }}
+        >
+            {/*
+            <BoardSide side="top" />
+            <Box
+                sx={{ height: "10px", width: "100%", backgroundColor: "red" }}
+            ></Box>   
+          */}
+
+            <BoardSide side="bottom" />
+        </Box>
+    );
 }
