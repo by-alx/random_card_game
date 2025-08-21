@@ -18,21 +18,21 @@ export default function Counter({ name, startingValue }: CounterProps) {
     return (
         <Paper
             sx={{
-                display: "flex",
-                flexDirection: "column",
-                alignContent: "center",
-                justifyContent: "center",
                 padding: 1,
+                width: "100px",
             }}
         >
-            <Box>
-                <Box sx={{ textAlign: "center" }}>
-                    {counter} {name}
+            <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
+                <Box>
+                    <Box sx={{ textAlign: "center" }}>{name}</Box>
+                    <Box sx={{ textAlign: "center" }}>{counter}</Box>
                 </Box>
-                <ButtonGroup variant="contained">
-                    <Button onClick={decrement}>-</Button>
-                    <Button onClick={increment}>+</Button>
-                </ButtonGroup>
+                <Box sx={{ display: "flex", justifyContent: "center" }}>
+                    <ButtonGroup variant="contained">
+                        <Button onClick={decrement}>-</Button>
+                        <Button onClick={increment}>+</Button>
+                    </ButtonGroup>
+                </Box>
             </Box>
         </Paper>
     );

@@ -1,19 +1,45 @@
 import Box from "@mui/material/Box";
 import Counter from "./Counter";
 import Slot from "./Slot";
-import { cards } from "../data/cards";
-import GameCard from "./GameCard";
+import { getCards } from "../data/cards";
+import Actions from "./Actions";
+import Hand from "./Hand";
+import Card from "../types/card";
+import { useCallback, useEffect } from "react";
+import ExtendedCard from "../types/extended-card";
+import { atom, useAtom, useAtomValue } from "jotai";
+import {
+    cardsInDeckAtom,
+    cardsInGraveyardAtom,
+    cardsInHandAtom,
+} from "../data/atoms";
 
 interface BoardSideProps {
     side: "top" | "bottom";
 }
 
 export default function BoardSide({ side }: BoardSideProps) {
-    const cardsData = cards;
+    const cardsInHand = useAtomValue(cardsInHandAtom);
+    const cardsInDeck = useAtomValue(cardsInDeckAtom);
+    const cardsInGraveyard = useAtomValue(cardsInGraveyardAtom);
+
+    /*const drawCards = useCallback((amount: number) => {
+        for (let index = 0; index < amount; index++) {
+            const randomIndex = Math.floor(Math.random() * cardsInDeck.length);
+            const card = cardsInDeck[randomIndex];
+            card.inDeck = false;
+            card.inHand = true;
+        }
+    }, []);
+
+    useEffect(() => {
+        console.log(drawCards(5));
+    }, []);*/
 
     const statChanges = {
         attack: 0,
         defense: 0,
+        costs: 0,
     };
 
     return (
@@ -43,12 +69,17 @@ export default function BoardSide({ side }: BoardSideProps) {
                 <Slot slotName="Unit Slot 4" type="Unit"></Slot>
                 <Slot slotName="Unit Slot 5" type="Unit"></Slot>
                 <Slot slotName="Unit Slot 6" type="Unit"></Slot>
-                <Slot slotName="Graveyard" type="Graveyard"></Slot>
+                <Slot
+                    slotName="Graveyard"
+                    type="Graveyard"
+                    cards={cardsInGraveyard}
+                ></Slot>
+                <Actions></Actions>
             </Box>
             <Box sx={{ display: "flex", justifyContent: "center", gap: 2 }}>
                 <Counter
                     key="resource_counter"
-                    name={"Body Pts"}
+                    name={"Body Parts"}
                     startingValue={0}
                 ></Counter>
                 <Slot slotName="Supporter" type="Supporter"></Slot>
@@ -58,12 +89,11 @@ export default function BoardSide({ side }: BoardSideProps) {
                 <Slot slotName="Effect Slot 4" type="Spell"></Slot>
                 <Slot slotName="Revive Slot 1" type="Revive"></Slot>
                 <Slot slotName="Revive Slot 2" type="Revive"></Slot>
-                <Slot slotName="Deck" type="Deck"></Slot>
+                <Slot slotName="Deck" type="Deck" cards={cardsInDeck}></Slot>
+                <Actions></Actions>
             </Box>
 
-            <Box>
-                <GameCard card={cardsData[0]} />
-            </Box>
+            <Hand cards={cardsInHand} />
         </Box>
     );
 }

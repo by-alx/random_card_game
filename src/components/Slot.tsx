@@ -5,6 +5,10 @@ import LockOpenIcon from "@mui/icons-material/LockOpen";
 import IconButton from "@mui/material/IconButton";
 import AddIcon from "@mui/icons-material/Add";
 import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
+import Backdrop from "@mui/material/Backdrop";
+import { useState } from "react";
+import Hand from "./Hand";
+import ExtendedCard from "../types/extended-card";
 
 interface SlotProps {
     slotName: string;
@@ -17,9 +21,19 @@ interface SlotProps {
         | "Revive"
         | "Deck";
     card?: Card;
+    cards?: ExtendedCard[];
 }
 
-export default function Slot({ slotName, type, card }: SlotProps) {
+export default function Slot({ slotName, type, card, cards }: SlotProps) {
+    const [open, setOpen] = useState(false);
+    const handleClose = () => {
+        setOpen(false);
+    };
+    const handleOpen = () => {
+        setOpen(true);
+    };
+
+    const cardsOrEmpty = cards || [];
     const canAdd =
         type === "Revive" ||
         type === "Spell" ||
@@ -49,7 +63,7 @@ export default function Slot({ slotName, type, card }: SlotProps) {
                 )}
 
                 {canCheck && (
-                    <IconButton>
+                    <IconButton onClick={handleOpen}>
                         <RemoveRedEyeIcon />
                     </IconButton>
                 )}
@@ -60,6 +74,14 @@ export default function Slot({ slotName, type, card }: SlotProps) {
                     </IconButton>
                 )}
             </Box>
+
+            {cards !== undefined && (
+                <Box sx={{ textAlign: "center" }}>({cardsOrEmpty.length})</Box>
+            )}
+
+            <Backdrop sx={{ zIndex: 10 }} open={open} onClick={handleClose}>
+                <Hand cards={cardsOrEmpty} />
+            </Backdrop>
         </Paper>
     );
 }
