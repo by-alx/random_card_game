@@ -3,7 +3,6 @@ import Card from "../types/card";
 import Box from "@mui/material/Box";
 import LockOpenIcon from "@mui/icons-material/LockOpen";
 import IconButton from "@mui/material/IconButton";
-import AddIcon from "@mui/icons-material/Add";
 import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
 import Backdrop from "@mui/material/Backdrop";
 import { useState } from "react";
@@ -34,11 +33,6 @@ export default function Slot({ slotName, type, card, cards }: SlotProps) {
     };
 
     const cardsOrEmpty = cards || [];
-    const canAdd =
-        type === "Revive" ||
-        type === "Spell" ||
-        type === "Supporter" ||
-        type === "Unit";
 
     const canCheck =
         type === "Deck" || type === "Graveyard" || type === "Supporter";
@@ -65,12 +59,6 @@ export default function Slot({ slotName, type, card, cards }: SlotProps) {
                 {canCheck && (
                     <IconButton onClick={handleOpen}>
                         <RemoveRedEyeIcon />
-                    </IconButton>
-                )}
-
-                {canAdd && (
-                    <IconButton>
-                        <AddIcon />
                     </IconButton>
                 )}
             </Box>

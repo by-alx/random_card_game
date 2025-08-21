@@ -2,7 +2,7 @@ import Box from "@mui/material/Box";
 import Paper from "@mui/material/Paper";
 import { useCallback, useState } from "react";
 import Modal from "@mui/material/Modal";
-import { Button } from "@mui/material";
+import { Button, TextField } from "@mui/material";
 import ExtendedCard from "../types/extended-card";
 import { cardsAtom, originalCards } from "../data/atoms";
 import { useAtom } from "jotai";
@@ -13,6 +13,8 @@ interface GameCardProps {
 
 export default function GameCard({ card }: GameCardProps) {
     const [cards, setCards] = useAtom(cardsAtom);
+    const [atk, setAtk] = useState<number | null>(null);
+    const [hp, setHp] = useState<number | null>(null);
 
     const [open, setOpen] = useState(false);
     const handleOpen = () => setOpen(true);
@@ -38,33 +40,99 @@ export default function GameCard({ card }: GameCardProps) {
             break;
     }
 
-    const moveToGraveyard = useCallback(() => {
-        console.log(card);
+    const openModal = useCallback(() => {
+        setAtk(card?.attack ?? null);
+        setHp(card?.defense ?? null);
+        handleOpen();
+    }, []);
 
-        const updatedCards = cards.map((c) => {
-            if (c.index === card.index) {
-                const originalCard = originalCards.find(
-                    (originalCard) => originalCard.name === card.name
-                );
+    const updateCard = useCallback(
+        (
+            location?: "deck" | "graveyard" | "exile" | "hand",
+            atk?: number | null,
+            hp?: number | null
+        ) => {
+            const updatedCards = cards.map((c) => {
+                if (c.index === card.index) {
+                    const originalCard = originalCards.find(
+                        (originalCard) => originalCard.name === card.name
+                    );
 
-                return {
-                    ...card,
-                    inDeck: false,
-                    inGraveyard: true,
-                    inHand: false,
-                    inPlay: false,
-                    inExile: false,
-                    cost: card.cost.map((cost) => cost + 1),
-                    attack: originalCard?.attack,
-                    defense: originalCard?.defense,
-                };
-            } else {
-                return c;
-            }
-        });
+                    let cardProps = {};
 
-        setCards(updatedCards);
-    }, [cards, setCards]);
+                    switch (location) {
+                        case "deck":
+                            cardProps = {
+                                inDeck: true,
+                                inGraveyard: false,
+                                inHand: false,
+                                inPlay: false,
+                                inExile: false,
+                            };
+                            break;
+
+                        case "graveyard":
+                            cardProps = {
+                                inDeck: false,
+                                inGraveyard: true,
+                                inHand: false,
+                                inPlay: false,
+                                inExile: false,
+                                cost: card.cost.map((cost) => cost + 1),
+                            };
+                            break;
+
+                        case "exile":
+                            cardProps = {
+                                inDeck: false,
+                                inGraveyard: false,
+                                inHand: false,
+                                inPlay: false,
+                                inExile: true,
+                                cost: originalCard?.cost || [],
+                            };
+                            break;
+
+                        case "hand":
+                            cardProps = {
+                                inDeck: false,
+                                inGraveyard: false,
+                                inHand: true,
+                                inPlay: false,
+                                inExile: false,
+                            };
+                            break;
+                    }
+
+                    if (atk !== undefined) {
+                        cardProps = {
+                            ...cardProps,
+                            attack: atk,
+                        };
+                    }
+
+                    if (hp !== undefined) {
+                        cardProps = {
+                            ...cardProps,
+                            defense: hp,
+                        };
+                    }
+
+                    return {
+                        ...card,
+                        attack: originalCard?.attack,
+                        defense: originalCard?.defense,
+                        ...cardProps,
+                    };
+                } else {
+                    return c;
+                }
+            });
+
+            setCards(updatedCards);
+        },
+        [cards, setCards]
+    );
 
     return (
         <>
@@ -82,7 +150,7 @@ export default function GameCard({ card }: GameCardProps) {
 
                     "&:hover": { outline: "1px solid #000" },
                 }}
-                onClick={handleOpen}
+                onClick={openModal}
             >
                 <Box sx={{ display: "flex", justifyContent: "space-between" }}>
                     <Box sx={{ fontWeight: "bold" }}>{card.name}</Box>
@@ -116,16 +184,74 @@ export default function GameCard({ card }: GameCardProps) {
                     }}
                 >
                     <Button variant="contained">Move to Board</Button>
-                    <Button variant="contained">Move to Deck</Button>
-                    <Button variant="contained" onClick={moveToGraveyard}>
-                        Move to Graveyard
-                    </Button>
-                    <Button variant="contained">Move to Exile</Button>
-                    <Button variant="contained">Move to Hand</Button>
-                    <Button variant="contained">Increase ATK</Button>
-                    <Button variant="contained">Decrease ATK</Button>
-                    <Button variant="contained">Increase HP</Button>
-                    <Button variant="contained">Decrease HP</Button>
+                    {!card.inDeck && (
+                        <Button
+                            variant="contained"
+                            onClick={() => updateCard("deck")}
+                        >
+                            Move to Deck
+                        </Button>
+                    )}
+                    {!card.inGraveyard && (
+                        <Button
+                            variant="contained"
+                            onClick={() => updateCard("graveyard")}
+                        >
+                            Move to Graveyard
+                        </Button>
+                    )}
+                    {!card.inExile && (
+                        <Button
+                            variant="contained"
+                            onClick={() => updateCard("exile")}
+                        >
+                            Move to Exile
+                        </Button>
+                    )}
+                    {!card.inHand && (
+                        <Button
+                            variant="contained"
+                            onClick={() => updateCard("hand")}
+                        >
+                            Move to Hand
+                        </Button>
+                    )}
+                    {(card.type === "Unit" || card.type === "Boss") && (
+                        <>
+                            <Box sx={{ display: "flex", marginTop: 2 }}>
+                                <TextField
+                                    label="ATK"
+                                    variant="filled"
+                                    value={atk}
+                                    onChange={(
+                                        event: React.ChangeEvent<HTMLInputElement>
+                                    ) => {
+                                        setAtk(
+                                            Number(event.target.value) ?? null
+                                        );
+                                    }}
+                                />
+                                <TextField
+                                    label="HP"
+                                    variant="filled"
+                                    value={hp}
+                                    onChange={(
+                                        event: React.ChangeEvent<HTMLInputElement>
+                                    ) => {
+                                        setHp(
+                                            Number(event.target.value) ?? null
+                                        );
+                                    }}
+                                />
+                            </Box>
+                            <Button
+                                variant="contained"
+                                onClick={() => updateCard(undefined, atk, hp)}
+                            >
+                                Save Stats
+                            </Button>
+                        </>
+                    )}
                 </Box>
             </Modal>
         </>

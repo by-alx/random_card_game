@@ -32,7 +32,15 @@ export const cardsInHandAtom = atom((get) => {
     const cards = get(cardsAtom);
     return cards.filter((card) => card.inHand);
 });
+export const cardsInPlayAtom = atom((get) => {
+    const cards = get(cardsAtom);
+    return cards.filter((card) => card.inPlay);
+});
 export const cardsInGraveyardAtom = atom((get) => {
     const cards = get(cardsAtom);
     return cards.filter((card) => card.inGraveyard);
+});
+export const cardsInExileAtom = atom((get) => {
+    const cards = get(cardsAtom);
+    return cards.filter((card) => card.inExile);
 });

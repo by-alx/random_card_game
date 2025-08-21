@@ -55,6 +55,9 @@ export default function Actions() {
                 <Button variant="contained" onClick={() => drawCards(5)}>
                     Start
                 </Button>
+                <Button variant="contained" onClick={() => drawCards(1)}>
+                    Draw
+                </Button>
                 <Button
                     variant="contained"
                     onClick={() => {
