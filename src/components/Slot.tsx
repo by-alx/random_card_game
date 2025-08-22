@@ -1,13 +1,12 @@
 import Paper from "@mui/material/Paper";
-import Card from "../types/card";
 import Box from "@mui/material/Box";
-import LockOpenIcon from "@mui/icons-material/LockOpen";
 import IconButton from "@mui/material/IconButton";
 import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
 import Backdrop from "@mui/material/Backdrop";
 import { useState } from "react";
 import Hand from "./Hand";
 import ExtendedCard from "../types/extended-card";
+import GameCard from "./GameCard";
 
 interface SlotProps {
     slotName: string;
@@ -19,7 +18,7 @@ interface SlotProps {
         | "Spell"
         | "Revive"
         | "Deck";
-    card?: Card;
+    card?: ExtendedCard;
     cards?: ExtendedCard[];
 }
 
@@ -40,8 +39,8 @@ export default function Slot({ slotName, type, card, cards }: SlotProps) {
     return (
         <Paper
             sx={{
-                width: "150px",
-                height: "200px",
+                width: "170px",
+                height: "230px",
                 display: "flex",
                 flexDirection: "column",
                 justifyContent: "center",
@@ -50,12 +49,6 @@ export default function Slot({ slotName, type, card, cards }: SlotProps) {
             <Box sx={{ textAlign: "center" }}>{slotName}</Box>
 
             <Box sx={{ display: "flex", justifyContent: "center" }}>
-                {type === "Leader" && (
-                    <IconButton>
-                        <LockOpenIcon />
-                    </IconButton>
-                )}
-
                 {canCheck && (
                     <IconButton onClick={handleOpen}>
                         <RemoveRedEyeIcon />
@@ -63,8 +56,14 @@ export default function Slot({ slotName, type, card, cards }: SlotProps) {
                 )}
             </Box>
 
-            {cards !== undefined && (
+            {cards && (
                 <Box sx={{ textAlign: "center" }}>({cardsOrEmpty.length})</Box>
+            )}
+
+            {card && (
+                <Box sx={{ display: "flex", justifyContent: "center" }}>
+                    <GameCard card={card} />
+                </Box>
             )}
 
             <Backdrop sx={{ zIndex: 10 }} open={open} onClick={handleClose}>

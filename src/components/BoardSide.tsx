@@ -1,18 +1,23 @@
 import Box from "@mui/material/Box";
 import Counter from "./Counter";
 import Slot from "./Slot";
-import { getCards } from "../data/cards";
 import Actions from "./Actions";
 import Hand from "./Hand";
-import Card from "../types/card";
-import { useCallback, useEffect } from "react";
-import ExtendedCard from "../types/extended-card";
-import { atom, useAtom, useAtomValue } from "jotai";
+import { useAtom, useAtomValue } from "jotai";
 import {
+    cardsAtom,
     cardsInDeckAtom,
     cardsInGraveyardAtom,
     cardsInHandAtom,
+    cardsInPlayAtom,
+    playerHpAtom,
+    playerResourceAtom,
 } from "../data/atoms";
+import Grid from "@mui/material/Grid";
+import Paper from "@mui/material/Paper";
+import { getCardByName } from "../data/cards";
+import { useEffect } from "react";
+import ExtendedCard from "../types/extended-card";
 
 interface BoardSideProps {
     side: "top" | "bottom";
@@ -22,19 +27,10 @@ export default function BoardSide({ side }: BoardSideProps) {
     const cardsInHand = useAtomValue(cardsInHandAtom);
     const cardsInDeck = useAtomValue(cardsInDeckAtom);
     const cardsInGraveyard = useAtomValue(cardsInGraveyardAtom);
-
-    /*const drawCards = useCallback((amount: number) => {
-        for (let index = 0; index < amount; index++) {
-            const randomIndex = Math.floor(Math.random() * cardsInDeck.length);
-            const card = cardsInDeck[randomIndex];
-            card.inDeck = false;
-            card.inHand = true;
-        }
-    }, []);
-
-    useEffect(() => {
-        console.log(drawCards(5));
-    }, []);*/
+    const cardsInPlay = useAtomValue(cardsInPlayAtom);
+    const [cards, setCards] = useAtom(cardsAtom);
+    const [playerHp, setPlayerHp] = useAtom(playerHpAtom);
+    const [playerResource, setPlayerResource] = useAtom(playerResourceAtom);
 
     const statChanges = {
         attack: 0,
@@ -42,56 +38,127 @@ export default function BoardSide({ side }: BoardSideProps) {
         costs: 0,
     };
 
+    useEffect(() => {
+        if (playerHp <= 0) {
+            const leader = cards.find((card) => card.type === "Boss");
+
+            if (leader == null) {
+                const leaderCard = getCardByName("Frankenstein's Monster");
+                let extendedLeaderCard: ExtendedCard | undefined = undefined;
+
+                if (leaderCard) {
+                    extendedLeaderCard = {
+                        ...leaderCard,
+                        index: cards.length,
+                        inDeck: false,
+                        inGraveyard: false,
+                        inHand: false,
+                        inPlay: true,
+                        inExile: false,
+                    };
+
+                    const extendedCards = [...cards, extendedLeaderCard];
+
+                    setCards(extendedCards);
+                }
+            }
+        }
+    }, [playerHp, getCardByName, cards, setCards]);
+
+    const leaderCard =
+        cardsInPlay.find((card) => card.type === "Boss") ?? undefined;
+
     return (
         <Box
             sx={{
                 display: "flex",
                 flexDirection: side === "top" ? "column-reverse" : "column",
-                gap: 2,
+                gap: 5,
             }}
         >
-            <Box
-                sx={{
-                    display: "flex",
-                    justifyContent: "center",
-                    gap: 2,
-                }}
-            >
-                <Counter
-                    key="hp_counter"
-                    name={"HP"}
-                    startingValue={20}
-                ></Counter>
-                <Slot slotName="Leader" type="Leader"></Slot>
-                <Slot slotName="Unit Slot 1" type="Unit"></Slot>
-                <Slot slotName="Unit Slot 2" type="Unit"></Slot>
-                <Slot slotName="Unit Slot 3" type="Unit"></Slot>
-                <Slot slotName="Unit Slot 4" type="Unit"></Slot>
-                <Slot slotName="Unit Slot 5" type="Unit"></Slot>
-                <Slot slotName="Unit Slot 6" type="Unit"></Slot>
-                <Slot
-                    slotName="Graveyard"
-                    type="Graveyard"
-                    cards={cardsInGraveyard}
-                ></Slot>
-                <Actions></Actions>
-            </Box>
-            <Box sx={{ display: "flex", justifyContent: "center", gap: 2 }}>
-                <Counter
-                    key="resource_counter"
-                    name={"Body Parts"}
-                    startingValue={0}
-                ></Counter>
-                <Slot slotName="Supporter" type="Supporter"></Slot>
-                <Slot slotName="Effect Slot 1" type="Spell"></Slot>
-                <Slot slotName="Effect Slot 2" type="Spell"></Slot>
-                <Slot slotName="Effect Slot 3" type="Spell"></Slot>
-                <Slot slotName="Effect Slot 4" type="Spell"></Slot>
-                <Slot slotName="Revive Slot 1" type="Revive"></Slot>
-                <Slot slotName="Revive Slot 2" type="Revive"></Slot>
-                <Slot slotName="Deck" type="Deck" cards={cardsInDeck}></Slot>
-                <Actions></Actions>
-            </Box>
+            <Grid container spacing={2}>
+                <Grid size={1}>
+                    <Box sx={{ backgroundColor: "red" }}>Test</Box>
+                </Grid>
+                <Grid size={1}>
+                    <Paper
+                        sx={{
+                            display: "flex",
+                            flexDirection: "column",
+                            gap: 3,
+                            padding: 1,
+                        }}
+                    >
+                        <Counter
+                            name={"HP"}
+                            counter={playerHp}
+                            setCounter={setPlayerHp}
+                        ></Counter>
+                        <Counter
+                            name={"Body Parts"}
+                            counter={playerResource}
+                            setCounter={setPlayerResource}
+                        ></Counter>
+                    </Paper>
+                </Grid>
+                <Grid size={9}>
+                    <Box
+                        sx={{
+                            display: "flex",
+                            flexDirection: "column",
+                            gap: 2,
+                        }}
+                    >
+                        <Box
+                            sx={{
+                                display: "flex",
+                                justifyContent: "center",
+                                gap: 2,
+                            }}
+                        >
+                            <Slot
+                                slotName="Leader"
+                                type="Leader"
+                                card={leaderCard}
+                            ></Slot>
+                            <Slot slotName="Unit Slot 1" type="Unit"></Slot>
+                            <Slot slotName="Unit Slot 2" type="Unit"></Slot>
+                            <Slot slotName="Unit Slot 3" type="Unit"></Slot>
+                            <Slot slotName="Unit Slot 4" type="Unit"></Slot>
+                            <Slot slotName="Unit Slot 5" type="Unit"></Slot>
+                            <Slot slotName="Unit Slot 6" type="Unit"></Slot>
+                            <Slot
+                                slotName="Graveyard"
+                                type="Graveyard"
+                                cards={cardsInGraveyard}
+                            ></Slot>
+                        </Box>
+                        <Box
+                            sx={{
+                                display: "flex",
+                                justifyContent: "center",
+                                gap: 2,
+                            }}
+                        >
+                            <Slot slotName="Supporter" type="Supporter"></Slot>
+                            <Slot slotName="Effect Slot 1" type="Spell"></Slot>
+                            <Slot slotName="Effect Slot 2" type="Spell"></Slot>
+                            <Slot slotName="Effect Slot 3" type="Spell"></Slot>
+                            <Slot slotName="Effect Slot 4" type="Spell"></Slot>
+                            <Slot slotName="Revive Slot 1" type="Revive"></Slot>
+                            <Slot slotName="Revive Slot 2" type="Revive"></Slot>
+                            <Slot
+                                slotName="Deck"
+                                type="Deck"
+                                cards={cardsInDeck}
+                            ></Slot>
+                        </Box>
+                    </Box>
+                </Grid>
+                <Grid size={1}>
+                    <Actions></Actions>
+                </Grid>
+            </Grid>
 
             <Hand cards={cardsInHand} />
         </Box>

@@ -208,3 +208,7 @@ export const getCards = (): Card[] => {
         }
     ];
 }
+
+export const getCardByName = (cardName: string):Card |undefined => {
+    return getCards().find(card => card.name === cardName);
+}

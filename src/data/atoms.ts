@@ -8,7 +8,6 @@ let cardCount = 0;
 
 cards.forEach((card) => {
     for (let index = 0; index < card.quantity; index++) {
-        cardCount++;
         let extendedCard: ExtendedCard = {
             ...card,
             index: cardCount,
@@ -19,8 +18,12 @@ cards.forEach((card) => {
             inExile: false,
         };
         extendedCards.push(extendedCard);
+        cardCount++;
     }
 });
+
+export const playerHpAtom = atom(20);
+export const playerResourceAtom = atom(0);
 
 export const originalCards = getCards();
 export const cardsAtom = atom(extendedCards);

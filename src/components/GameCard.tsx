@@ -13,8 +13,8 @@ interface GameCardProps {
 
 export default function GameCard({ card }: GameCardProps) {
     const [cards, setCards] = useAtom(cardsAtom);
-    const [atk, setAtk] = useState<number | null>(null);
-    const [hp, setHp] = useState<number | null>(null);
+    const [atk, setAtk] = useState<number>(card.attack ?? 0);
+    const [hp, setHp] = useState<number>(card.attack ?? 0);
 
     const [open, setOpen] = useState(false);
     const handleOpen = () => setOpen(true);
@@ -41,17 +41,13 @@ export default function GameCard({ card }: GameCardProps) {
     }
 
     const openModal = useCallback(() => {
-        setAtk(card?.attack ?? null);
-        setHp(card?.defense ?? null);
+        //setAtk(card.attack ?? 0);
+        //setHp(card.defense ?? 0);
         handleOpen();
-    }, []);
+    }, [card]);
 
-    const updateCard = useCallback(
-        (
-            location?: "deck" | "graveyard" | "exile" | "hand",
-            atk?: number | null,
-            hp?: number | null
-        ) => {
+    const updateLocation = useCallback(
+        (location?: "deck" | "graveyard" | "exile" | "hand") => {
             const updatedCards = cards.map((c) => {
                 if (c.index === card.index) {
                     const originalCard = originalCards.find(
@@ -78,7 +74,7 @@ export default function GameCard({ card }: GameCardProps) {
                                 inHand: false,
                                 inPlay: false,
                                 inExile: false,
-                                cost: card.cost.map((cost) => cost + 1),
+                                cost: (card.cost ?? []).map((cost) => cost + 1),
                             };
                             break;
 
@@ -104,24 +100,37 @@ export default function GameCard({ card }: GameCardProps) {
                             break;
                     }
 
-                    if (atk !== undefined) {
-                        cardProps = {
-                            ...cardProps,
-                            attack: atk,
-                        };
-                    }
-
-                    if (hp !== undefined) {
-                        cardProps = {
-                            ...cardProps,
-                            defense: hp,
-                        };
-                    }
-
                     return {
                         ...card,
                         attack: originalCard?.attack,
                         defense: originalCard?.defense,
+                        ...cardProps,
+                    };
+                } else {
+                    return c;
+                }
+            });
+
+            setCards(updatedCards);
+        },
+        [cards, setCards, originalCards]
+    );
+
+    const updateStats = useCallback(
+        (atk: number, hp: number) => {
+            console.log(card);
+
+            const updatedCards = cards.map((c) => {
+                if (c.index === card.index) {
+                    console.log("test");
+
+                    let cardProps = {
+                        attack: atk,
+                        defense: hp,
+                    };
+
+                    return {
+                        ...card,
                         ...cardProps,
                     };
                 } else {
@@ -154,14 +163,14 @@ export default function GameCard({ card }: GameCardProps) {
             >
                 <Box sx={{ display: "flex", justifyContent: "space-between" }}>
                     <Box sx={{ fontWeight: "bold" }}>{card.name}</Box>
-                    {card.cost.join(" / ")}
+                    {(card?.cost ?? []).join(" / ")}
                 </Box>
                 <Box sx={{ textAlign: "center", userSelect: "none" }}>
                     {card.description}
                 </Box>
                 <Box sx={{ display: "flex", justifyContent: "space-between" }}>
                     <Box>{card.attack}</Box>
-                    {card.tags.join(", ")}
+                    {(card?.tags ?? []).join(", ")}
                     <Box>{card.defense}</Box>
                 </Box>
             </Paper>
@@ -187,7 +196,7 @@ export default function GameCard({ card }: GameCardProps) {
                     {!card.inDeck && (
                         <Button
                             variant="contained"
-                            onClick={() => updateCard("deck")}
+                            onClick={() => updateLocation("deck")}
                         >
                             Move to Deck
                         </Button>
@@ -195,7 +204,7 @@ export default function GameCard({ card }: GameCardProps) {
                     {!card.inGraveyard && (
                         <Button
                             variant="contained"
-                            onClick={() => updateCard("graveyard")}
+                            onClick={() => updateLocation("graveyard")}
                         >
                             Move to Graveyard
                         </Button>
@@ -203,7 +212,7 @@ export default function GameCard({ card }: GameCardProps) {
                     {!card.inExile && (
                         <Button
                             variant="contained"
-                            onClick={() => updateCard("exile")}
+                            onClick={() => updateLocation("exile")}
                         >
                             Move to Exile
                         </Button>
@@ -211,7 +220,7 @@ export default function GameCard({ card }: GameCardProps) {
                     {!card.inHand && (
                         <Button
                             variant="contained"
-                            onClick={() => updateCard("hand")}
+                            onClick={() => updateLocation("hand")}
                         >
                             Move to Hand
                         </Button>
@@ -246,7 +255,7 @@ export default function GameCard({ card }: GameCardProps) {
                             </Box>
                             <Button
                                 variant="contained"
-                                onClick={() => updateCard(undefined, atk, hp)}
+                                onClick={() => updateStats(atk, hp)}
                             >
                                 Save Stats
                             </Button>

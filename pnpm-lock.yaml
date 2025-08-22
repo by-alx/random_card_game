@@ -39,6 +39,9 @@ importers:
       eslint-plugin-react-hooks:
         specifier: ^5.2.0
         version: 5.2.0(eslint@9.33.0)
+      eslint-plugin-react-hooks-addons:
+        specifier: ^0.5.0
+        version: 0.5.0(eslint@9.33.0)
       jotai:
         specifier: ^2.13.1
         version: 2.13.1(@babel/core@7.28.3)(@babel/template@7.27.2)(@types/react@19.1.10)(react@19.1.1)
@@ -773,6 +776,11 @@ packages:
   escape-string-regexp@4.0.0:
     resolution: {integrity: sha512-TtpcNJ3XAzx3Gq8sWRzJaVajRs0uVxA2YAkdb1jm2YkPz4G6egUFAyA3n5vtEIZefPk5Wa4UXbKuS5fKkJWdgA==}
     engines: {node: '>=10'}
+
+  eslint-plugin-react-hooks-addons@0.5.0:
+    resolution: {integrity: sha512-m+vccztI9ylmCsjjlvKcOuvKTiODRw/+E9sBPrTP5IUrdhli1Eg4VaDMZ7fCegphQkd7H1Uu93zrPo36RBMuMA==}
+    peerDependencies:
+      eslint: '>=3.0.0'
 
   eslint-plugin-react-hooks@5.2.0:
     resolution: {integrity: sha512-+f15FfK64YQwZdJNELETdn5ibXEUQmW1DZL6KXhNnc2heoy/sg9VJJeT7n8TlMWouzWqSWavFkIhHyIbIAEapg==}
@@ -1911,6 +1919,10 @@ snapshots:
   escalade@3.2.0: {}
 
   escape-string-regexp@4.0.0: {}
+
+  eslint-plugin-react-hooks-addons@0.5.0(eslint@9.33.0):
+    dependencies:
+      eslint: 9.33.0
 
   eslint-plugin-react-hooks@5.2.0(eslint@9.33.0):
     dependencies:
