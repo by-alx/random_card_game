@@ -44,7 +44,7 @@ export const getCards = (): Card[] => {
         },
         {
             name: "Plague Bearer",
-            description: "Attack: Poisons the target (poisoned units get -1 HP at the start of each round and no longer give resources on death)",
+            description: "Attack: Poisons the target (poisoned units get -1 HP at the start of each round and no longer give resources)",
             type: "Unit",
             tags: ["Zombie"],
             cost: [0],

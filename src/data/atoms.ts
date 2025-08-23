@@ -16,6 +16,7 @@ cards.forEach((card) => {
             inHand: false,
             inPlay: false,
             inExile: false,
+                    inRevive: false,
         };
         extendedCards.push(extendedCard);
         cardCount++;
@@ -24,26 +25,44 @@ cards.forEach((card) => {
 
 export const playerHpAtom = atom(20);
 export const playerResourceAtom = atom(0);
+export const buffsAtom = atom({attack: 0, defense: 0, cost: 0});
 
 export const originalCards = getCards();
 export const cardsAtom = atom(extendedCards);
-export const cardsInDeckAtom = atom((get) => {
+export const cardsAtomWithBuffs = atom((get) => {
     const cards = get(cardsAtom);
+    const buffs = get(buffsAtom);
+
+    return cards.map(card => {
+        return {
+            ...card,
+            attack: (card.attack ?? 0) + buffs.attack,
+            defense: (card.defense ?? 0) + buffs.defense,
+            cost: card.cost.map(cost => cost + buffs.cost),
+        }
+    })
+});
+export const cardsInDeckAtom = atom((get) => {
+    const cards = get(cardsAtomWithBuffs);
     return cards.filter((card) => card.inDeck);
 });
 export const cardsInHandAtom = atom((get) => {
-    const cards = get(cardsAtom);
+    const cards = get(cardsAtomWithBuffs);
     return cards.filter((card) => card.inHand);
 });
 export const cardsInPlayAtom = atom((get) => {
-    const cards = get(cardsAtom);
+    const cards = get(cardsAtomWithBuffs);
     return cards.filter((card) => card.inPlay);
 });
+export const cardsInReviveAtom = atom((get) => {
+    const cards = get(cardsAtomWithBuffs);
+    return cards.filter((card) => card.inRevive);
+});
 export const cardsInGraveyardAtom = atom((get) => {
-    const cards = get(cardsAtom);
+    const cards = get(cardsAtomWithBuffs);
     return cards.filter((card) => card.inGraveyard);
 });
 export const cardsInExileAtom = atom((get) => {
-    const cards = get(cardsAtom);
+    const cards = get(cardsAtomWithBuffs);
     return cards.filter((card) => card.inExile);
 });

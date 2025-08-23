@@ -14,7 +14,7 @@ interface GameCardProps {
 export default function GameCard({ card }: GameCardProps) {
     const [cards, setCards] = useAtom(cardsAtom);
     const [atk, setAtk] = useState<number>(card.attack ?? 0);
-    const [hp, setHp] = useState<number>(card.attack ?? 0);
+    const [hp, setHp] = useState<number>(card.defense ?? 0);
 
     const [open, setOpen] = useState(false);
     const handleOpen = () => setOpen(true);
@@ -47,7 +47,15 @@ export default function GameCard({ card }: GameCardProps) {
     }, [card]);
 
     const updateLocation = useCallback(
-        (location?: "deck" | "graveyard" | "exile" | "hand") => {
+        (
+            location?:
+                | "deck"
+                | "graveyard"
+                | "revive"
+                | "hand"
+                | "play"
+                | "exile"
+        ) => {
             const updatedCards = cards.map((c) => {
                 if (c.index === card.index) {
                     const originalCard = originalCards.find(
@@ -64,6 +72,7 @@ export default function GameCard({ card }: GameCardProps) {
                                 inHand: false,
                                 inPlay: false,
                                 inExile: false,
+                                inRevive: false,
                             };
                             break;
 
@@ -74,18 +83,19 @@ export default function GameCard({ card }: GameCardProps) {
                                 inHand: false,
                                 inPlay: false,
                                 inExile: false,
+                                inRevive: false,
                                 cost: (card.cost ?? []).map((cost) => cost + 1),
                             };
                             break;
 
-                        case "exile":
+                        case "revive":
                             cardProps = {
                                 inDeck: false,
                                 inGraveyard: false,
                                 inHand: false,
                                 inPlay: false,
-                                inExile: true,
-                                cost: originalCard?.cost || [],
+                                inExile: false,
+                                inRevive: true,
                             };
                             break;
 
@@ -96,6 +106,30 @@ export default function GameCard({ card }: GameCardProps) {
                                 inHand: true,
                                 inPlay: false,
                                 inExile: false,
+                                inRevive: false,
+                            };
+                            break;
+
+                        case "play":
+                            cardProps = {
+                                inDeck: false,
+                                inGraveyard: false,
+                                inHand: false,
+                                inPlay: true,
+                                inExile: false,
+                                inRevive: false,
+                            };
+                            break;
+
+                        case "exile":
+                            cardProps = {
+                                inDeck: false,
+                                inGraveyard: false,
+                                inHand: false,
+                                inPlay: false,
+                                inExile: true,
+                                inRevive: false,
+                                cost: originalCard?.cost || [],
                             };
                             break;
                     }
@@ -192,7 +226,14 @@ export default function GameCard({ card }: GameCardProps) {
                         p: 4,
                     }}
                 >
-                    <Button variant="contained">Move to Board</Button>
+                    {!card.inPlay && (
+                        <Button
+                            variant="contained"
+                            onClick={() => updateLocation("play")}
+                        >
+                            Move to Board
+                        </Button>
+                    )}
                     {!card.inDeck && (
                         <Button
                             variant="contained"
@@ -201,12 +242,19 @@ export default function GameCard({ card }: GameCardProps) {
                             Move to Deck
                         </Button>
                     )}
-                    {!card.inGraveyard && (
+                    {!card.inGraveyard ? (
                         <Button
                             variant="contained"
                             onClick={() => updateLocation("graveyard")}
                         >
                             Move to Graveyard
+                        </Button>
+                    ) : (
+                        <Button
+                            variant="contained"
+                            onClick={() => updateLocation("revive")}
+                        >
+                            Revive
                         </Button>
                     )}
                     {!card.inExile && (

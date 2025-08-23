@@ -7,4 +7,5 @@ export default interface ExtendedCard extends Card {
     inHand: boolean;
     inPlay: boolean;
     inExile: boolean;
+    inRevive: boolean;
 }

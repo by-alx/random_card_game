@@ -1,6 +1,5 @@
 import Box from "@mui/material/Box";
 import Counter from "./Counter";
-import Slot from "./Slot";
 import Actions from "./Actions";
 import Hand from "./Hand";
 import { useAtom, useAtomValue } from "jotai";
@@ -10,6 +9,7 @@ import {
     cardsInGraveyardAtom,
     cardsInHandAtom,
     cardsInPlayAtom,
+    cardsInReviveAtom,
     playerHpAtom,
     playerResourceAtom,
 } from "../data/atoms";
@@ -18,6 +18,9 @@ import Paper from "@mui/material/Paper";
 import { getCardByName } from "../data/cards";
 import { useEffect } from "react";
 import ExtendedCard from "../types/extended-card";
+import FirstSlots from "./FirstSlots";
+import SecondSlots from "./SecondSlots";
+import Log from "./Log";
 
 interface BoardSideProps {
     side: "top" | "bottom";
@@ -28,15 +31,10 @@ export default function BoardSide({ side }: BoardSideProps) {
     const cardsInDeck = useAtomValue(cardsInDeckAtom);
     const cardsInGraveyard = useAtomValue(cardsInGraveyardAtom);
     const cardsInPlay = useAtomValue(cardsInPlayAtom);
+    const cardsInRevive = useAtomValue(cardsInReviveAtom);
     const [cards, setCards] = useAtom(cardsAtom);
     const [playerHp, setPlayerHp] = useAtom(playerHpAtom);
     const [playerResource, setPlayerResource] = useAtom(playerResourceAtom);
-
-    const statChanges = {
-        attack: 0,
-        defense: 0,
-        costs: 0,
-    };
 
     useEffect(() => {
         if (playerHp <= 0) {
@@ -55,6 +53,7 @@ export default function BoardSide({ side }: BoardSideProps) {
                         inHand: false,
                         inPlay: true,
                         inExile: false,
+                        inRevive: false,
                     };
 
                     const extendedCards = [...cards, extendedLeaderCard];
@@ -67,6 +66,12 @@ export default function BoardSide({ side }: BoardSideProps) {
 
     const leaderCard =
         cardsInPlay.find((card) => card.type === "Boss") ?? undefined;
+    const unitsInPlay =
+        cardsInPlay.filter((card) => card.type === "Unit") ?? [];
+    const supportersInPlay =
+        cardsInPlay.filter((card) => card.type === "Supporter") ?? [];
+    const spellsInPlay =
+        cardsInPlay.filter((card) => card.type === "Spell") ?? [];
 
     return (
         <Box
@@ -78,7 +83,7 @@ export default function BoardSide({ side }: BoardSideProps) {
         >
             <Grid container spacing={2}>
                 <Grid size={1}>
-                    <Box sx={{ backgroundColor: "red" }}>Test</Box>
+                    <Log />
                 </Grid>
                 <Grid size={1}>
                     <Paper
@@ -109,50 +114,17 @@ export default function BoardSide({ side }: BoardSideProps) {
                             gap: 2,
                         }}
                     >
-                        <Box
-                            sx={{
-                                display: "flex",
-                                justifyContent: "center",
-                                gap: 2,
-                            }}
-                        >
-                            <Slot
-                                slotName="Leader"
-                                type="Leader"
-                                card={leaderCard}
-                            ></Slot>
-                            <Slot slotName="Unit Slot 1" type="Unit"></Slot>
-                            <Slot slotName="Unit Slot 2" type="Unit"></Slot>
-                            <Slot slotName="Unit Slot 3" type="Unit"></Slot>
-                            <Slot slotName="Unit Slot 4" type="Unit"></Slot>
-                            <Slot slotName="Unit Slot 5" type="Unit"></Slot>
-                            <Slot slotName="Unit Slot 6" type="Unit"></Slot>
-                            <Slot
-                                slotName="Graveyard"
-                                type="Graveyard"
-                                cards={cardsInGraveyard}
-                            ></Slot>
-                        </Box>
-                        <Box
-                            sx={{
-                                display: "flex",
-                                justifyContent: "center",
-                                gap: 2,
-                            }}
-                        >
-                            <Slot slotName="Supporter" type="Supporter"></Slot>
-                            <Slot slotName="Effect Slot 1" type="Spell"></Slot>
-                            <Slot slotName="Effect Slot 2" type="Spell"></Slot>
-                            <Slot slotName="Effect Slot 3" type="Spell"></Slot>
-                            <Slot slotName="Effect Slot 4" type="Spell"></Slot>
-                            <Slot slotName="Revive Slot 1" type="Revive"></Slot>
-                            <Slot slotName="Revive Slot 2" type="Revive"></Slot>
-                            <Slot
-                                slotName="Deck"
-                                type="Deck"
-                                cards={cardsInDeck}
-                            ></Slot>
-                        </Box>
+                        <FirstSlots
+                            leaderCard={leaderCard}
+                            unitsInPlay={unitsInPlay}
+                            cardsInGraveyard={cardsInGraveyard}
+                        />
+                        <SecondSlots
+                            supportersInPlay={supportersInPlay}
+                            spellsInPlay={spellsInPlay}
+                            cardsInRevive={cardsInRevive}
+                            cardsInDeck={cardsInDeck}
+                        />
                     </Box>
                 </Grid>
                 <Grid size={1}>
