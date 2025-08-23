@@ -39,26 +39,29 @@ export default function Slot({ slotName, type, card, cards }: SlotProps) {
     return (
         <Paper
             sx={{
-                width: "170px",
-                height: "230px",
+                width: "180px",
+                height: "250px",
                 display: "flex",
                 flexDirection: "column",
                 justifyContent: "center",
             }}
         >
-            <Box sx={{ textAlign: "center" }}>{slotName}</Box>
-
-            <Box sx={{ display: "flex", justifyContent: "center" }}>
+            <Box
+                sx={{
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                }}
+            >
                 {canCheck && (
                     <IconButton onClick={handleOpen}>
                         <RemoveRedEyeIcon />
                     </IconButton>
                 )}
+                <Box sx={{ textAlign: "center", padding: "8px 0" }}>
+                    {cards ? `${slotName} (${cardsOrEmpty.length})` : slotName}
+                </Box>
             </Box>
-
-            {cards && (
-                <Box sx={{ textAlign: "center" }}>({cardsOrEmpty.length})</Box>
-            )}
 
             {card && (
                 <Box sx={{ display: "flex", justifyContent: "center" }}>

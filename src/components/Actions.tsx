@@ -12,6 +12,8 @@ import {
     cardsInHandAtom,
     cardsInPlayAtom,
     cardsInReviveAtom,
+    supporterIndexAtom,
+    supportersInPlayAtom,
 } from "../data/atoms";
 import { getRandomIndices } from "../utility/helpers";
 import { getCardByName } from "../data/cards";
@@ -23,10 +25,12 @@ export default function Actions() {
     const cardsInDeck = useAtomValue(cardsInDeckAtom);
     const cardsInGraveyard = useAtomValue(cardsInGraveyardAtom);
     const cardsInPlay = useAtomValue(cardsInPlayAtom);
+    const supportersInPlay = useAtomValue(supportersInPlayAtom);
     const cardsInRevive = useAtomValue(cardsInReviveAtom);
     const cardsInExile = useAtomValue(cardsInExileAtom);
     const [cards, setCards] = useAtom(cardsAtom);
     const [buffs, setBuffs] = useAtom(buffsAtom);
+    const [supporterIndex, setSupporterIndex] = useAtom(supporterIndexAtom);
 
     const [open, setOpen] = useState(false);
     const handleOpen = () => setOpen(true);
@@ -89,6 +93,14 @@ export default function Actions() {
         [buffs, setBuffs]
     );
 
+    const changeSupporterOrder = useCallback(() => {
+        if (supporterIndex + 1 < supportersInPlay.length) {
+            setSupporterIndex(supporterIndex + 1);
+        } else {
+            setSupporterIndex(0);
+        }
+    }, [setSupporterIndex, supporterIndex, supportersInPlay]);
+
     let buffCounter = 0;
 
     if (buffs.attack !== 0) {
@@ -117,6 +129,9 @@ export default function Actions() {
                 </Button>
                 <Button variant="contained" onClick={handleOpen}>
                     Buffs {buffCounter > 0 ? `(${buffCounter})` : null}
+                </Button>
+                <Button variant="contained" onClick={changeSupporterOrder}>
+                    Swap Supporter
                 </Button>
                 <Button
                     variant="contained"

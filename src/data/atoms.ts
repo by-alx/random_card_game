@@ -26,6 +26,7 @@ cards.forEach((card) => {
 export const playerHpAtom = atom(20);
 export const playerResourceAtom = atom(0);
 export const buffsAtom = atom({attack: 0, defense: 0, cost: 0});
+export const supporterIndexAtom = atom(0);
 
 export const originalCards = getCards();
 export const cardsAtom = atom(extendedCards);
@@ -53,6 +54,18 @@ export const cardsInHandAtom = atom((get) => {
 export const cardsInPlayAtom = atom((get) => {
     const cards = get(cardsAtomWithBuffs);
     return cards.filter((card) => card.inPlay);
+});
+export const unitsInPlayAtom = atom((get) => {
+    const cards = get(cardsInPlayAtom);
+    return cards.filter((card) => card.type === "Unit") ?? [];
+});
+export const supportersInPlayAtom = atom((get) => {
+    const cards = get(cardsInPlayAtom);
+    return cards.filter((card) => card.type === "Supporter") ?? [];
+});
+export const spellsInPlayAtom = atom((get) => {
+    const cards = get(cardsInPlayAtom);
+    return cards.filter((card) => card.type === "Spell") ?? [];
 });
 export const cardsInReviveAtom = atom((get) => {
     const cards = get(cardsAtomWithBuffs);

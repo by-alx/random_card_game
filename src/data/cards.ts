@@ -141,7 +141,7 @@ export const getCards = (): Card[] => {
             quantity: 2
         },
         {
-            name: "Lend a hand",
+            name: "Lending a hand",
             description: "Deal 2 damage to a unit or pay 2 body parts to deal 3 damage instead",
             type: "Spell",
             tags: [],

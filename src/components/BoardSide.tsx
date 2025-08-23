@@ -12,6 +12,9 @@ import {
     cardsInReviveAtom,
     playerHpAtom,
     playerResourceAtom,
+    spellsInPlayAtom,
+    supportersInPlayAtom,
+    unitsInPlayAtom,
 } from "../data/atoms";
 import Grid from "@mui/material/Grid";
 import Paper from "@mui/material/Paper";
@@ -31,6 +34,9 @@ export default function BoardSide({ side }: BoardSideProps) {
     const cardsInDeck = useAtomValue(cardsInDeckAtom);
     const cardsInGraveyard = useAtomValue(cardsInGraveyardAtom);
     const cardsInPlay = useAtomValue(cardsInPlayAtom);
+    const unitsInPlay = useAtomValue(unitsInPlayAtom);
+    const supportersInPlay = useAtomValue(supportersInPlayAtom);
+    const spellsInPlay = useAtomValue(spellsInPlayAtom);
     const cardsInRevive = useAtomValue(cardsInReviveAtom);
     const [cards, setCards] = useAtom(cardsAtom);
     const [playerHp, setPlayerHp] = useAtom(playerHpAtom);
@@ -66,12 +72,6 @@ export default function BoardSide({ side }: BoardSideProps) {
 
     const leaderCard =
         cardsInPlay.find((card) => card.type === "Boss") ?? undefined;
-    const unitsInPlay =
-        cardsInPlay.filter((card) => card.type === "Unit") ?? [];
-    const supportersInPlay =
-        cardsInPlay.filter((card) => card.type === "Supporter") ?? [];
-    const spellsInPlay =
-        cardsInPlay.filter((card) => card.type === "Spell") ?? [];
 
     return (
         <Box
@@ -82,9 +82,6 @@ export default function BoardSide({ side }: BoardSideProps) {
             }}
         >
             <Grid container spacing={2}>
-                <Grid size={1}>
-                    <Log />
-                </Grid>
                 <Grid size={1}>
                     <Paper
                         sx={{
@@ -105,8 +102,9 @@ export default function BoardSide({ side }: BoardSideProps) {
                             setCounter={setPlayerResource}
                         ></Counter>
                     </Paper>
+                    <Log />
                 </Grid>
-                <Grid size={9}>
+                <Grid size={10}>
                     <Box
                         sx={{
                             display: "flex",

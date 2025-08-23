@@ -1,6 +1,8 @@
 import Box from "@mui/material/Box";
 import Slot from "./Slot";
 import ExtendedCard from "../types/extended-card";
+import { useAtomValue } from "jotai";
+import { supporterIndexAtom } from "../data/atoms";
 
 interface SecondSlotsProps {
     supportersInPlay: ExtendedCard[];
@@ -15,6 +17,8 @@ export default function SecondSlots({
     cardsInRevive,
     cardsInDeck,
 }: SecondSlotsProps) {
+    const supporterIndex = useAtomValue(supporterIndexAtom);
+
     return (
         <Box
             sx={{
@@ -26,6 +30,7 @@ export default function SecondSlots({
             <Slot
                 slotName="Supporter"
                 type="Supporter"
+                card={supportersInPlay[supporterIndex]}
                 cards={supportersInPlay}
             ></Slot>
             <Slot

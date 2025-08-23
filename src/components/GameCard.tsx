@@ -152,12 +152,8 @@ export default function GameCard({ card }: GameCardProps) {
 
     const updateStats = useCallback(
         (atk: number, hp: number) => {
-            console.log(card);
-
             const updatedCards = cards.map((c) => {
                 if (c.index === card.index) {
-                    console.log("test");
-
                     let cardProps = {
                         attack: atk,
                         defense: hp,
@@ -199,7 +195,13 @@ export default function GameCard({ card }: GameCardProps) {
                     <Box sx={{ fontWeight: "bold" }}>{card.name}</Box>
                     {(card?.cost ?? []).join(" / ")}
                 </Box>
-                <Box sx={{ textAlign: "center", userSelect: "none" }}>
+                <Box
+                    sx={{
+                        textAlign: "center",
+                        userSelect: "none",
+                        fontSize: "14px",
+                    }}
+                >
                     {card.description}
                 </Box>
                 <Box sx={{ display: "flex", justifyContent: "space-between" }}>
