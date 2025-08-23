@@ -3,6 +3,7 @@
     "version": "7.0.0",
     "private": true,
     "type": "module",
+    "homepage": "https://by-alx.github.io/random_card_game/",
     "scripts": {
         "dev": "vite",
         "build": "tsc -b && vite build",
