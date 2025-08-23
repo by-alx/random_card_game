@@ -23,6 +23,7 @@ cards.forEach((card) => {
     }
 });
 
+export const roundAtom = atom({count: 0, isRunning: false});
 export const playerHpAtom = atom(20);
 export const playerResourceAtom = atom(0);
 export const buffsAtom = atom({attack: 0, defense: 0, cost: 0});

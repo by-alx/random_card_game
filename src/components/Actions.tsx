@@ -12,6 +12,8 @@ import {
     cardsInHandAtom,
     cardsInPlayAtom,
     cardsInReviveAtom,
+    playerResourceAtom,
+    roundAtom,
     supporterIndexAtom,
     supportersInPlayAtom,
 } from "../data/atoms";
@@ -31,6 +33,8 @@ export default function Actions() {
     const [cards, setCards] = useAtom(cardsAtom);
     const [buffs, setBuffs] = useAtom(buffsAtom);
     const [supporterIndex, setSupporterIndex] = useAtom(supporterIndexAtom);
+    const [round, setRound] = useAtom(roundAtom);
+    const [playerResource, setPlayerResource] = useAtom(playerResourceAtom);
 
     const [open, setOpen] = useState(false);
     const handleOpen = () => setOpen(true);
@@ -60,6 +64,21 @@ export default function Actions() {
         },
         [cardsInDeck]
     );
+
+    const startGame = useCallback(() => {
+        drawCards(5);
+        setRound({ count: 1, isRunning: true });
+    }, [drawCards, setRound]);
+
+    const startRound = useCallback(() => {
+        drawCards(1);
+        setPlayerResource(playerResource + 1);
+        setRound({ count: round.count + 1, isRunning: true });
+    }, [drawCards, setRound, round]);
+
+    const endRound = useCallback(() => {
+        setRound({ count: round.count, isRunning: false });
+    }, [setRound, round]);
 
     const addTorso = useCallback(() => {
         const newCard = getCardByName("Explosive Torso");
@@ -118,9 +137,19 @@ export default function Actions() {
     return (
         <Paper sx={{ padding: 1 }}>
             <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
-                <Button variant="contained" onClick={() => drawCards(5)}>
-                    Start
-                </Button>
+                {round.count === 0 ? (
+                    <Button variant="contained" onClick={startGame}>
+                        Start
+                    </Button>
+                ) : round.isRunning ? (
+                    <Button variant="contained" onClick={endRound}>
+                        End Round
+                    </Button>
+                ) : (
+                    <Button variant="contained" onClick={startRound}>
+                        Next Round
+                    </Button>
+                )}
                 <Button variant="contained" onClick={() => drawCards(1)}>
                     Draw
                 </Button>
