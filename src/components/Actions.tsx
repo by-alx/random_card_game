@@ -36,9 +36,13 @@ export default function Actions() {
     const [round, setRound] = useAtom(roundAtom);
     const [playerResource, setPlayerResource] = useAtom(playerResourceAtom);
 
-    const [open, setOpen] = useState(false);
-    const handleOpen = () => setOpen(true);
-    const handleClose = () => setOpen(false);
+    const [openBuffs, setOpenBuffs] = useState(false);
+    const handleOpenBuffs = () => setOpenBuffs(true);
+    const handleCloseBuffs = () => setOpenBuffs(false);
+
+    const [openRules, setOpenRules] = useState(false);
+    const handleOpenRules = () => setOpenRules(true);
+    const handleCloseRules = () => setOpenRules(false);
 
     const drawCards = useCallback(
         (amount: number) => {
@@ -166,11 +170,14 @@ export default function Actions() {
                 <Button variant="contained" onClick={addTorso}>
                     Add Torso
                 </Button>
-                <Button variant="contained" onClick={handleOpen}>
+                <Button variant="contained" onClick={handleOpenBuffs}>
                     Buffs {buffCounter > 0 ? `(${buffCounter})` : null}
                 </Button>
                 <Button variant="contained" onClick={changeSupporterOrder}>
                     Swap Supporter
+                </Button>
+                <Button variant="contained" onClick={handleOpenRules}>
+                    Rules
                 </Button>
                 <Button
                     variant="contained"
@@ -188,7 +195,7 @@ export default function Actions() {
                 </Button>
             </Box>
 
-            <Modal open={open} onClose={handleClose}>
+            <Modal open={openBuffs} onClose={handleCloseBuffs}>
                 <Box
                     sx={{
                         display: "flex",
@@ -246,6 +253,59 @@ export default function Actions() {
                             }}
                         />
                     </Box>
+                </Box>
+            </Modal>
+
+            <Modal open={openRules} onClose={handleCloseRules}>
+                <Box
+                    sx={{
+                        display: "flex",
+                        flexDirection: "column",
+                        gap: 1,
+                        position: "absolute",
+                        top: "50%",
+                        left: "50%",
+                        transform: "translate(-50%, -50%)",
+                        width: 600,
+                        bgcolor: "background.paper",
+                        border: "2px solid #000",
+                        boxShadow: 24,
+                        p: 4,
+                    }}
+                >
+                    <h3>Rules (probably incomplete)</h3>
+                    <ul>
+                        <li>
+                            Resource body parts: At the beginning of each round
+                            (after the first) the player gains one body part.
+                            Some cards cost body parts to play. When killing an
+                            enemy unit or when an own unit dies, generate one
+                            body part.
+                        </li>
+                        <li>
+                            Units must be attacked first, only when there are no
+                            units the leader can be attacked. Supporters can not
+                            be attacked.
+                        </li>
+                        <li>
+                            Zombies can be revived from graveyard. When a unit
+                            is revived it is placed on the revive-slot. In the
+                            next round it is placed on the board.
+                        </li>
+                        <li>
+                            A unit can not attack in the same round it has been
+                            played or revived (unless it has the keyword
+                            "Rush").
+                        </li>
+                        <li>
+                            Each time a unit dies it body part costs increases
+                            by one.
+                        </li>
+                        <li>
+                            Supporters can be stacked. Only the top supporter
+                            can be active, all others are inactive.
+                        </li>
+                    </ul>
                 </Box>
             </Modal>
         </Paper>
