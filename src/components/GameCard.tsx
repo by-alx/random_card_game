@@ -4,7 +4,7 @@ import { useCallback, useState } from "react";
 import Modal from "@mui/material/Modal";
 import { Button, TextField } from "@mui/material";
 import ExtendedCard from "../types/extended-card";
-import { cardsAtom, originalCards } from "../data/atoms";
+import { cardsAtom, originalCards, roundAtom } from "../data/atoms";
 import { useAtom } from "jotai";
 
 interface GameCardProps {
@@ -13,6 +13,7 @@ interface GameCardProps {
 
 export default function GameCard({ card }: GameCardProps) {
     const [cards, setCards] = useAtom(cardsAtom);
+    const [round, setRound] = useAtom(roundAtom);
     const [atk, setAtk] = useState<number>(card.attack ?? 0);
     const [hp, setHp] = useState<number>(card.defense ?? 0);
 
@@ -41,8 +42,6 @@ export default function GameCard({ card }: GameCardProps) {
     }
 
     const openModal = useCallback(() => {
-        //setAtk(card.attack ?? 0);
-        //setHp(card.defense ?? 0);
         handleOpen();
     }, [card]);
 
@@ -53,7 +52,7 @@ export default function GameCard({ card }: GameCardProps) {
                 | "graveyard"
                 | "revive"
                 | "hand"
-                | "play"
+                | "board"
                 | "exile"
         ) => {
             const updatedCards = cards.map((c) => {
@@ -110,7 +109,7 @@ export default function GameCard({ card }: GameCardProps) {
                             };
                             break;
 
-                        case "play":
+                        case "board":
                             cardProps = {
                                 inDeck: false,
                                 inGraveyard: false,
@@ -134,6 +133,15 @@ export default function GameCard({ card }: GameCardProps) {
                             break;
                     }
 
+                    setRound({
+                        count: round.count,
+                        isRunning: round.isRunning,
+                        log: [
+                            ...round.log,
+                            `Move "${card.name}" to "${location}"`,
+                        ],
+                    });
+
                     return {
                         ...card,
                         attack: originalCard?.attack,
@@ -147,7 +155,7 @@ export default function GameCard({ card }: GameCardProps) {
 
             setCards(updatedCards);
         },
-        [cards, setCards, originalCards]
+        [cards, setCards, originalCards, setRound, round, card]
     );
 
     const updateStats = useCallback(
@@ -193,7 +201,7 @@ export default function GameCard({ card }: GameCardProps) {
             >
                 <Box sx={{ display: "flex", justifyContent: "space-between" }}>
                     <Box sx={{ fontWeight: "bold" }}>{card.name}</Box>
-                    {(card?.cost ?? []).join(" / ")}
+                    <Box>{(card?.cost ?? []).join("/")}</Box>
                 </Box>
                 <Box
                     sx={{
@@ -231,7 +239,7 @@ export default function GameCard({ card }: GameCardProps) {
                     {!card.inPlay && (
                         <Button
                             variant="contained"
-                            onClick={() => updateLocation("play")}
+                            onClick={() => updateLocation("board")}
                         >
                             Move to Board
                         </Button>

@@ -67,17 +67,27 @@ export default function Actions() {
 
     const startGame = useCallback(() => {
         drawCards(5);
-        setRound({ count: 1, isRunning: true });
+        setRound({ count: 1, isRunning: true, log: ["Game Start"] });
     }, [drawCards, setRound]);
 
     const startRound = useCallback(() => {
         drawCards(1);
         setPlayerResource(playerResource + 1);
-        setRound({ count: round.count + 1, isRunning: true });
+
+        const newRound = round.count + 1;
+        setRound({
+            count: newRound,
+            isRunning: true,
+            log: [...round.log, `Round ${newRound} start`],
+        });
     }, [drawCards, setRound, round]);
 
     const endRound = useCallback(() => {
-        setRound({ count: round.count, isRunning: false });
+        setRound({
+            count: round.count,
+            isRunning: false,
+            log: [...round.log, `Round ${round.count} end`],
+        });
     }, [setRound, round]);
 
     const addTorso = useCallback(() => {

@@ -89,6 +89,7 @@ export default function BoardSide({ side }: BoardSideProps) {
                             flexDirection: "column",
                             gap: 3,
                             padding: 1,
+                            marginBottom: 2,
                         }}
                     >
                         <Counter

@@ -1,6 +1,7 @@
 import { atom } from "jotai";
 import ExtendedCard from "../types/extended-card";
 import { getCards } from "./cards";
+import Log from "../types/log";
 
 const cards = getCards();
 let extendedCards: ExtendedCard[] = [];
@@ -16,14 +17,14 @@ cards.forEach((card) => {
             inHand: false,
             inPlay: false,
             inExile: false,
-                    inRevive: false,
+            inRevive: false,
         };
         extendedCards.push(extendedCard);
         cardCount++;
     }
 });
 
-export const roundAtom = atom({count: 0, isRunning: false});
+export const roundAtom = atom<Log>({count: 0, isRunning: false, log: []});
 export const playerHpAtom = atom(20);
 export const playerResourceAtom = atom(0);
 export const buffsAtom = atom({attack: 0, defense: 0, cost: 0});
