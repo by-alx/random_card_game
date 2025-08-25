@@ -153,6 +153,16 @@ export const getCards = (): Card[] => {
             quantity: 2
         },
         {
+            name: "Summoner",
+            description: "On Spawn: Choose a unit to play from your deck",
+            type: "Unit",
+            tags: ["Zombie"],
+            cost: [1],
+            attack: 1,
+            defense: 1,
+            quantity: 2
+        },
+        {
             name: "Tesla Coil",
             description: "Reduces all body part costs by 1 and play as many cards as you want until the end of your turn",
             type: "Spell",
