@@ -83,16 +83,6 @@ export const getCards = (): Card[] => {
             quantity: 2
         },
         {
-            name: "Tesla Coil",
-            description: "Aura: Reduces all body part costs by one",
-            type: "Unit",
-            tags: ["Machine"],
-            cost: [2],
-            attack: 0,
-            defense: 1,
-            quantity: 2
-        },
-        {
             name: "Trebuchet",
             description: "On Spawn: Create an explosive torso in the enemy deck (once this is drawn it explodes and deals 1 damage to 2 random enemy units)",
             type: "Unit",
@@ -160,6 +150,14 @@ export const getCards = (): Card[] => {
             cost: [2],
             attack: 1,
             defense: 2,
+            quantity: 2
+        },
+        {
+            name: "Tesla Coil",
+            description: "Reduces all body part costs by 1 and play as many cards as you want until the end of your turn",
+            type: "Spell",
+            tags: [""],
+            cost: [2],
             quantity: 2
         },
         {
