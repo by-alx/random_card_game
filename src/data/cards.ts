@@ -133,6 +133,36 @@ export const getCards = (): Card[] => {
             quantity: 2
         },
         {
+            name: "Powder Monkey",
+            description: "On Death: Deal 1 damage to all units",
+            type: "Unit",
+            tags: ["Zombie"],
+            cost: [2],
+            attack: 2,
+            defense: 2,
+            quantity: 2
+        },
+        {
+            name: "General",
+            description: "Aura: Give other allies +1 / +1",
+            type: "Unit",
+            tags: ["Zombie"],
+            cost: [3],
+            attack: 3,
+            defense: 4,
+            quantity: 2
+        },
+        {
+            name: "Flesh Absorber",
+            description: "On Spawn: Kill an ally to add his stats to mine",
+            type: "Unit",
+            tags: ["Zombie"],
+            cost: [2],
+            attack: 1,
+            defense: 2,
+            quantity: 2
+        },
+        {
             name: "Ground Fog",
             description: "Increases the HP of your units by 1, last 3 rounds",
             type: "Spell",
@@ -170,6 +200,14 @@ export const getCards = (): Card[] => {
             type: "Spell",
             tags: [],
             cost: [0],
+            quantity: 2
+        },
+        {
+            name: "Explosive Arm",
+            description: "Deal 1 damage to two different units or pay 4 body parts to deal 2 damage to two different units",
+            type: "Spell",
+            tags: [],
+            cost: [0, 4],
             quantity: 2
         },
         {
