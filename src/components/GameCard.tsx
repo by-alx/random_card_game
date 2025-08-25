@@ -79,7 +79,9 @@ export default function GameCard({ card }: GameCardProps) {
                                 inPlay: false,
                                 inExile: false,
                                 inRevive: false,
-                                cost: (card.cost ?? []).map((cost) => cost + 1),
+                                cost: (originalCard?.cost ?? []).map(
+                                    (cost) => cost + 1
+                                ),
                             };
                             break;
 
@@ -124,7 +126,7 @@ export default function GameCard({ card }: GameCardProps) {
                                 inPlay: false,
                                 inExile: true,
                                 inRevive: false,
-                                cost: originalCard?.cost || [],
+                                cost: originalCard?.cost ?? [],
                             };
                             break;
                     }
