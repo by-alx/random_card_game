@@ -2,7 +2,7 @@ import Box from "@mui/material/Box";
 import Paper from "@mui/material/Paper";
 import { useCallback, useState } from "react";
 import Modal from "@mui/material/Modal";
-import { Button, TextField } from "@mui/material";
+import { Button, TextField, Typography } from "@mui/material";
 import ExtendedCard from "../types/extended-card";
 import { cardsAtom, originalCards, roundAtom } from "../data/atoms";
 import { useAtom } from "jotai";
@@ -10,6 +10,8 @@ import { useAtom } from "jotai";
 interface GameCardProps {
     card: ExtendedCard;
 }
+
+type Location = "deck" | "graveyard" | "revive" | "hand" | "board" | "exile";
 
 export default function GameCard({ card }: GameCardProps) {
     const [cards, setCards] = useAtom(cardsAtom);
@@ -42,19 +44,13 @@ export default function GameCard({ card }: GameCardProps) {
     }
 
     const openModal = useCallback(() => {
+        setAtk(card.attack ?? 0);
+        setHp(card.defense ?? 0);
         handleOpen();
     }, [card]);
 
     const updateLocation = useCallback(
-        (
-            location?:
-                | "deck"
-                | "graveyard"
-                | "revive"
-                | "hand"
-                | "board"
-                | "exile"
-        ) => {
+        (location?: Location) => {
             const updatedCards = cards.map((c) => {
                 if (c.index === card.index) {
                     const originalCard = originalCards.find(
@@ -181,6 +177,22 @@ export default function GameCard({ card }: GameCardProps) {
         [cards, setCards]
     );
 
+    const onLocationChange = useCallback(
+        (location: Location) => {
+            updateLocation(location);
+            handleClose();
+        },
+        [updateLocation, handleClose]
+    );
+
+    const onUpdateStats = useCallback(
+        (atk: number, hp: number) => {
+            updateStats(atk, hp);
+            handleClose();
+        },
+        [updateStats, handleClose]
+    );
+
     return (
         <>
             <Paper
@@ -219,7 +231,11 @@ export default function GameCard({ card }: GameCardProps) {
                 </Box>
             </Paper>
 
-            <Modal open={open} onClose={handleClose}>
+            <Modal
+                open={open}
+                onClose={handleClose}
+                key={`${card.index}_${card.name}`}
+            >
                 <Box
                     sx={{
                         display: "flex",
@@ -236,10 +252,12 @@ export default function GameCard({ card }: GameCardProps) {
                         p: 4,
                     }}
                 >
+                    <Typography variant="h5">Menu for "{card.name}"</Typography>
+
                     {!card.inPlay && (
                         <Button
                             variant="contained"
-                            onClick={() => updateLocation("board")}
+                            onClick={() => onLocationChange("board")}
                         >
                             Move to Board
                         </Button>
@@ -247,7 +265,7 @@ export default function GameCard({ card }: GameCardProps) {
                     {!card.inDeck && (
                         <Button
                             variant="contained"
-                            onClick={() => updateLocation("deck")}
+                            onClick={() => onLocationChange("deck")}
                         >
                             Move to Deck
                         </Button>
@@ -255,14 +273,14 @@ export default function GameCard({ card }: GameCardProps) {
                     {!card.inGraveyard ? (
                         <Button
                             variant="contained"
-                            onClick={() => updateLocation("graveyard")}
+                            onClick={() => onLocationChange("graveyard")}
                         >
                             Move to Graveyard
                         </Button>
                     ) : (
                         <Button
                             variant="contained"
-                            onClick={() => updateLocation("revive")}
+                            onClick={() => onLocationChange("revive")}
                         >
                             Revive
                         </Button>
@@ -270,7 +288,7 @@ export default function GameCard({ card }: GameCardProps) {
                     {!card.inExile && (
                         <Button
                             variant="contained"
-                            onClick={() => updateLocation("exile")}
+                            onClick={() => onLocationChange("exile")}
                         >
                             Move to Exile
                         </Button>
@@ -278,7 +296,7 @@ export default function GameCard({ card }: GameCardProps) {
                     {!card.inHand && (
                         <Button
                             variant="contained"
-                            onClick={() => updateLocation("hand")}
+                            onClick={() => onLocationChange("hand")}
                         >
                             Move to Hand
                         </Button>
@@ -313,7 +331,7 @@ export default function GameCard({ card }: GameCardProps) {
                             </Box>
                             <Button
                                 variant="contained"
-                                onClick={() => updateStats(atk, hp)}
+                                onClick={() => onUpdateStats(atk, hp)}
                             >
                                 Save Stats
                             </Button>

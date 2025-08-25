@@ -70,7 +70,9 @@ export default function Slot({ slotName, type, card, cards }: SlotProps) {
             )}
 
             <Backdrop sx={{ zIndex: 10 }} open={open} onClick={handleClose}>
-                <Hand cards={cardsOrEmpty} />
+                <Box sx={{ height: "99vh", padding: 1, overflow: "auto" }}>
+                    <Hand cards={cardsOrEmpty} />
+                </Box>
             </Backdrop>
         </Paper>
     );
