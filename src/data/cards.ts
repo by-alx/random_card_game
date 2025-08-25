@@ -4,7 +4,7 @@ export const getCards = (): Card[] => {
     return [
         {
             name: "Prophet",
-            description: "Spawn: Pay 2 body parts to draw 1 card",
+            description: "On Spawn: Pay 2 body parts to draw 1 card",
             type: "Unit",
             tags: ["Zombie"],
             cost: [0,2],
@@ -14,7 +14,7 @@ export const getCards = (): Card[] => {
         },
         {
             name: "Doctor",
-            description: "Spawn: Pay 2 body parts to kill 1 ally and heal another ally completely (this removes poison)",
+            description: "On Spawn: Pay 2 body parts to kill 1 ally and heal another ally completely (this removes poison)",
             type: "Unit",
             tags: ["Zombie"],
             cost: [0,2],
@@ -44,7 +44,7 @@ export const getCards = (): Card[] => {
         },
         {
             name: "Plague Bearer",
-            description: "Attack: Poisons the target (poisoned units get -1 HP at the start of each round and no longer give resources)",
+            description: "On Hit: Poisons the target (poisoned units get -1 HP at the start of each round)",
             type: "Unit",
             tags: ["Zombie"],
             cost: [0],
@@ -54,7 +54,7 @@ export const getCards = (): Card[] => {
         },
         {
             name: "Meat Colossus",
-            description: "Poisons units that attack him",
+            description: "On Hit: Poisons units that attack him",
             type: "Unit",
             tags: ["Zombie"],
             cost: [4],
@@ -64,7 +64,7 @@ export const getCards = (): Card[] => {
         },
         {
             name: "Undertaker",
-            description: "Spawn: Revive a unit from the graveyard immediately. Upon death the revived unit will be removed from the game",
+            description: "On Spawn: Revive a unit from the graveyard immediately. Upon death the revived unit will be removed from the game",
             type: "Unit",
             tags: ["Zombie"],
             cost: [1],
@@ -74,7 +74,7 @@ export const getCards = (): Card[] => {
         },
         {
             name: "Mage",
-            description: "Spawn: Cast a spell from the graveyard, the spell will afterwards be removed from the game",
+            description: "On Spawn: Cast a spell from the graveyard, the spell will afterwards be removed from the game",
             type: "Unit",
             tags: ["Zombie"],
             cost: [1],
@@ -94,7 +94,7 @@ export const getCards = (): Card[] => {
         },
         {
             name: "Trebuchet",
-            description: "Spawn: Create an explosive torso in the enemy deck (once this is drawn it explodes and deals 1 damage to 2 random enemy units)",
+            description: "On Spawn: Create an explosive torso in the enemy deck (once this is drawn it explodes and deals 1 damage to 2 random enemy units)",
             type: "Unit",
             tags: ["Machine"],
             cost: [0],
@@ -114,7 +114,7 @@ export const getCards = (): Card[] => {
         },
         {
             name: "Flesh Ripper",
-            description: "Attack: Gains 1 body part",
+            description: "On Attack: Gains 1 body part",
             type: "Unit",
             tags: ["Zombie"],
             cost: [1],
@@ -124,7 +124,7 @@ export const getCards = (): Card[] => {
         },
         {
             name: "Servant",
-            description: "On death: Draw a card",
+            description: "On Death: Draw a card",
             type: "Unit",
             tags: ["Zombie"],
             cost: [0],
@@ -236,7 +236,7 @@ export const getCards = (): Card[] => {
         },
         {
             name: "Frankenstein's Monster",
-            description: "Spawn: Kill two of my supporters. Use up all body parts and add 1 ATK and 1 HP evenly to my stats (eg. 3 body parts = +2/+1)",
+            description: "On Spawn: Kill two of my supporters. Use up all body parts and add 1 ATK and 1 HP evenly to my stats (eg. 3 body parts = +2/+1)",
             type: "Boss",
             tags: ["Zombie"],
             cost: [0],
