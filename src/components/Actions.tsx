@@ -84,7 +84,7 @@ export default function Actions() {
             isRunning: true,
             log: [...round.log, `Round ${newRound} start`],
         });
-    }, [drawCards, setRound, round]);
+    }, [drawCards, setRound, round, setPlayerResource, playerResource]);
 
     const endRound = useCallback(() => {
         setRound({
