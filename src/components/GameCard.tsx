@@ -79,6 +79,8 @@ export default function GameCard({ card }: GameCardProps) {
                                 inPlay: false,
                                 inExile: false,
                                 inRevive: false,
+                                attack: originalCard?.attack,
+                                defense: originalCard?.defense,
                                 cost: (card?.cost ?? []).map(
                                     (cost) => cost + 1
                                 ),
@@ -104,6 +106,8 @@ export default function GameCard({ card }: GameCardProps) {
                                 inPlay: false,
                                 inExile: false,
                                 inRevive: false,
+                                attack: originalCard?.attack,
+                                defense: originalCard?.defense,
                             };
                             break;
 
@@ -126,6 +130,8 @@ export default function GameCard({ card }: GameCardProps) {
                                 inPlay: false,
                                 inExile: true,
                                 inRevive: false,
+                                attack: originalCard?.attack,
+                                defense: originalCard?.defense,
                                 cost: originalCard?.cost ?? [],
                             };
                             break;
@@ -142,8 +148,6 @@ export default function GameCard({ card }: GameCardProps) {
 
                     return {
                         ...card,
-                        attack: originalCard?.attack,
-                        defense: originalCard?.defense,
                         ...cardProps,
                     };
                 } else {
