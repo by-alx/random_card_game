@@ -1,4 +1,5 @@
 import Card from "../types/card";
+import Supporter from "../types/supporter";
 
 export const getCards = (): Card[] => {
     return [
@@ -54,22 +55,22 @@ export const getCards = (): Card[] => {
         },
         {
             name: "Meat Colossus",
-            description: "On Hit: Poisons units that attack him",
+            description: "On Round start: Regenerate 1 missing HP",
             type: "Unit",
             tags: ["Zombie"],
             cost: [4],
-            attack: 4,
-            defense: 6,
+            attack: 3,
+            defense: 7,
             quantity: 2
         },
         {
             name: "Undertaker",
-            description: "On Spawn: Revive a unit from the graveyard immediately. Upon death the revived unit will be removed from the game",
+            description: "On Spawn: Play a unit from graveyard immediately. The played unit has no effects anymore and will be removed from the game once it dies",
             type: "Unit",
             tags: ["Zombie"],
-            cost: [1],
-            attack: 2,
-            defense: 2,
+            cost: [3],
+            attack: 1,
+            defense: 3,
             quantity: 2
         },
         {
@@ -124,7 +125,7 @@ export const getCards = (): Card[] => {
         },
         {
             name: "Powder Monkey",
-            description: "On Death: Deal 1 damage to all units",
+            description: "On Death: Deal 1 damage to all units and exile me",
             type: "Unit",
             tags: ["Zombie"],
             cost: [2],
@@ -163,6 +164,26 @@ export const getCards = (): Card[] => {
             quantity: 2
         },
         {
+            name: "Sniper",
+            description: "On Spawn: Deal 2 damage to an enemy unit",
+            type: "Unit",
+            tags: ["Zombie"],
+            cost: [2],
+            attack: 2,
+            defense: 1,
+            quantity: 2
+        },
+        {
+            name: "Leviathan",
+            description: "Can only take 1 damage at a time",
+            type: "Unit",
+            tags: ["Zombie"],
+            cost: [5],
+            attack: 6,
+            defense: 3,
+            quantity: 2
+        },
+        {
             name: "Tesla Coil",
             description: "Reduces all body part costs by 1 and play as many cards as you want until the end of your turn",
             type: "Spell",
@@ -172,10 +193,10 @@ export const getCards = (): Card[] => {
         },
         {
             name: "Ground Fog",
-            description: "Increases the HP of your units by 1, last 3 rounds",
+            description: "Increases the HP of your units by 1, last 2 rounds",
             type: "Spell",
             tags: [""],
-            cost: [0],
+            cost: [1],
             quantity: 2
         },
         {
@@ -219,30 +240,6 @@ export const getCards = (): Card[] => {
             quantity: 2
         },
         {
-            name: "Henry Clerval",
-            description: "Costs of reviving allies -1. On Death: Steal 1 resource from your opponent. Next round +1 on your opponent's resource costs.",
-            type: "Supporter",
-            tags: ["Human"],
-            cost: [2],
-            quantity: 1
-        },
-        {
-            name: "William Frankenstein",
-            description: "Add a second revive slot to the board. On Death: Remove all cards from all special slots from the game. Your opponent can't put a unit on his special slot next turn.",
-            type: "Supporter",
-            tags: ["Human"],
-            cost: [2],
-            quantity: 1
-        },
-        {
-            name: "Elizabeth Lavenza",
-            description: "Pay 1 body part to put a card from your hand into the deck and draw a new card (once per round). On Death: Both players discard one card from their hand (cards are removed from the game) and your opponent looses one resource.",
-            type: "Supporter",
-            tags: ["Human"],
-            cost: [2],
-            quantity: 1
-        },
-        {
             name: "Frankenstein's Monster",
             description: "On Spawn: Kill two of my supporters. Use up all body parts and add 1 ATK and 1 HP evenly to my stats (eg. 3 body parts = +2/+1)",
             type: "Boss",
@@ -253,6 +250,44 @@ export const getCards = (): Card[] => {
             quantity: 0
         }
     ];
+}
+
+export const getSupporters = (): Supporter[] => {
+    return [
+        {
+            name: "Henry Clerval",
+            level_0_text: "Revive 3 units to unlock level 1",
+            level_0_counter: 3,
+            level_1_text: "Costs of reviving allies -1, revive 3 units to unlock level 2",
+            level_1_counter: 3,
+            level_2_text: "Costs of reviving allies -2, revive 4 units to unlock level 3",
+            level_2_counter: 4,
+            level_3_text: "Costs of reviving allies -3",
+            counter: 0
+        },
+        {
+            name: "William Frankenstein",
+            level_0_text: "Kill 4 enemy units to unlock level 1",
+            level_0_counter: 4,
+            level_1_text: "Killing an enemy gives the killing unit +1 attack, kill 8 enemy units to unlock level 2",
+            level_1_counter: 8,
+            level_2_text: "Killing an enemy gives the killing unit +2 attack, kill 12 enemy units to unlock level 3",
+            level_2_counter: 12,
+            level_3_text: 'All your units have "Rush" and they get +3 attack after killing an enemy',
+            counter: 0
+        },
+        {
+            name: "Elizabeth Lavenza",
+            level_0_text: "Draw 5 cards to unlock level 1",
+            level_0_counter: 5,
+            level_1_text: "Pay 2 body parts to put a card from your hand into the deck and draw a new card, draw 5 cards to unlock level 2",
+            level_1_counter: 5,
+            level_2_text: "Pay 1 body part to put a card from your hand into the deck and draw a new card, draw 10 cards to unlock level 3",
+            level_2_counter: 10,
+            level_3_text: "Pay 1 body part to draw a card",
+            counter: 0
+        },
+    ]
 }
 
 export const getCardByName = (cardName: string):Card |undefined => {

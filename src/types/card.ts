@@ -1,7 +1,7 @@
 export default interface Card {
     name: string;
     description: string;
-    type: "Unit" | "Spell" | "Supporter" | "Boss";
+    type: "Unit" | "Spell" | "Boss";
     tags: string[];
     cost: number[];
     attack?: number;

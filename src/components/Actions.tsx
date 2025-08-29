@@ -4,7 +4,6 @@ import Paper from "@mui/material/Paper";
 import { useAtom, useAtomValue } from "jotai";
 import { useCallback, useState } from "react";
 import {
-    buffsAtom,
     cardsAtom,
     cardsInDeckAtom,
     cardsInExileAtom,
@@ -12,33 +11,25 @@ import {
     cardsInHandAtom,
     cardsInPlayAtom,
     cardsInReviveAtom,
+    drawCounterAtom,
     playerResourceAtom,
     roundAtom,
-    supporterIndexAtom,
-    supportersInPlayAtom,
 } from "../data/atoms";
 import { getRandomIndices } from "../utility/helpers";
 import { getCardByName } from "../data/cards";
 import Modal from "@mui/material/Modal";
-import TextField from "@mui/material/TextField";
 
 export default function Actions() {
     const cardsInHand = useAtomValue(cardsInHandAtom);
     const cardsInDeck = useAtomValue(cardsInDeckAtom);
     const cardsInGraveyard = useAtomValue(cardsInGraveyardAtom);
     const cardsInPlay = useAtomValue(cardsInPlayAtom);
-    const supportersInPlay = useAtomValue(supportersInPlayAtom);
     const cardsInRevive = useAtomValue(cardsInReviveAtom);
     const cardsInExile = useAtomValue(cardsInExileAtom);
     const [cards, setCards] = useAtom(cardsAtom);
-    const [buffs, setBuffs] = useAtom(buffsAtom);
-    const [supporterIndex, setSupporterIndex] = useAtom(supporterIndexAtom);
     const [round, setRound] = useAtom(roundAtom);
+    const [drawCounter, setDrawCounter] = useAtom(drawCounterAtom);
     const [playerResource, setPlayerResource] = useAtom(playerResourceAtom);
-
-    const [openBuffs, setOpenBuffs] = useState(false);
-    const handleOpenBuffs = () => setOpenBuffs(true);
-    const handleCloseBuffs = () => setOpenBuffs(false);
 
     const [openRules, setOpenRules] = useState(false);
     const handleOpenRules = () => setOpenRules(true);
@@ -71,11 +62,19 @@ export default function Actions() {
 
     const startGame = useCallback(() => {
         drawCards(5);
+        setPlayerResource(1);
         setRound({ count: 1, isRunning: true, log: ["Game Start"] });
-    }, [drawCards, setRound]);
+    }, [drawCards, setPlayerResource, setRound]);
 
     const startRound = useCallback(() => {
-        drawCards(1);
+        if (cardsInHand.length < 4) {
+            drawCards(2);
+            setDrawCounter(drawCounter + 2);
+        } else {
+            drawCards(1);
+            setDrawCounter(drawCounter + 1);
+        }
+
         setPlayerResource(playerResource + 1);
 
         const newRound = round.count + 1;
@@ -84,7 +83,16 @@ export default function Actions() {
             isRunning: true,
             log: [...round.log, `Round ${newRound} start`],
         });
-    }, [drawCards, setRound, round, setPlayerResource, playerResource]);
+    }, [
+        cardsInHand,
+        drawCards,
+        setRound,
+        round,
+        setPlayerResource,
+        playerResource,
+        setDrawCounter,
+        drawCounter,
+    ]);
 
     const endRound = useCallback(() => {
         setRound({
@@ -116,37 +124,10 @@ export default function Actions() {
         }
     }, [getCardByName, setCards, cards]);
 
-    const updateBuffs = useCallback(
-        (fieldName: string, value: number) => {
-            setBuffs({
-                ...buffs,
-                [fieldName]: value,
-            });
-        },
-        [buffs, setBuffs]
-    );
-
-    const changeSupporterOrder = useCallback(() => {
-        if (supporterIndex + 1 < supportersInPlay.length) {
-            setSupporterIndex(supporterIndex + 1);
-        } else {
-            setSupporterIndex(0);
-        }
-    }, [setSupporterIndex, supporterIndex, supportersInPlay]);
-
-    let buffCounter = 0;
-
-    if (buffs.attack !== 0) {
-        buffCounter++;
-    }
-
-    if (buffs.defense !== 0) {
-        buffCounter++;
-    }
-
-    if (buffs.cost !== 0) {
-        buffCounter++;
-    }
+    const onDraw = useCallback(() => {
+        drawCards(1);
+        setDrawCounter(drawCounter + 1);
+    }, [drawCards, setDrawCounter, drawCounter]);
 
     return (
         <Paper sx={{ padding: 1 }}>
@@ -164,17 +145,11 @@ export default function Actions() {
                         Next Round
                     </Button>
                 )}
-                <Button variant="contained" onClick={() => drawCards(1)}>
+                <Button variant="contained" onClick={onDraw}>
                     Draw
                 </Button>
                 <Button variant="contained" onClick={addTorso}>
                     Add Torso
-                </Button>
-                <Button variant="contained" onClick={handleOpenBuffs}>
-                    Buffs {buffCounter > 0 ? `(${buffCounter})` : null}
-                </Button>
-                <Button variant="contained" onClick={changeSupporterOrder}>
-                    Swap Supporter
                 </Button>
                 <Button variant="contained" onClick={handleOpenRules}>
                     Rules
@@ -194,67 +169,6 @@ export default function Actions() {
                     Debug
                 </Button>
             </Box>
-
-            <Modal open={openBuffs} onClose={handleCloseBuffs}>
-                <Box
-                    sx={{
-                        display: "flex",
-                        flexDirection: "column",
-                        gap: 1,
-                        position: "absolute",
-                        top: "50%",
-                        left: "50%",
-                        transform: "translate(-50%, -50%)",
-                        width: 300,
-                        bgcolor: "background.paper",
-                        border: "2px solid #000",
-                        boxShadow: 24,
-                        p: 4,
-                    }}
-                >
-                    <Box sx={{ display: "flex", gap: 1 }}>
-                        <TextField
-                            label="ATK"
-                            variant="filled"
-                            value={buffs.attack}
-                            onChange={(
-                                event: React.ChangeEvent<HTMLInputElement>
-                            ) => {
-                                updateBuffs(
-                                    "attack",
-                                    Number(event.target.value) ?? 0
-                                );
-                            }}
-                        />
-                        <TextField
-                            label="HP"
-                            variant="filled"
-                            value={buffs.defense}
-                            onChange={(
-                                event: React.ChangeEvent<HTMLInputElement>
-                            ) => {
-                                updateBuffs(
-                                    "defense",
-                                    Number(event.target.value) ?? 0
-                                );
-                            }}
-                        />
-                        <TextField
-                            label="Cost"
-                            variant="filled"
-                            value={buffs.cost}
-                            onChange={(
-                                event: React.ChangeEvent<HTMLInputElement>
-                            ) => {
-                                updateBuffs(
-                                    "cost",
-                                    Number(event.target.value) ?? 0
-                                );
-                            }}
-                        />
-                    </Box>
-                </Box>
-            </Modal>
 
             <Modal open={openRules} onClose={handleCloseRules}>
                 <Box
@@ -276,21 +190,31 @@ export default function Actions() {
                     <h3>Rules (probably incomplete)</h3>
                     <ul>
                         <li>
+                            Card draw: On game start draw 5 cards, on round
+                            start draw 2 cards when you have less then 4 cards
+                            in hand, otherwise draw 1 card.
+                        </li>
+                        <li>
+                            Each round you can play up to two cards from your
+                            hand, sacrificing a card also counts as playing.
+                        </li>
+                        <li>
                             Resource body parts: At the beginning of each round
-                            (after the first) the player gains one body part.
-                            Some cards cost body parts to play. When killing an
-                            enemy unit or when an own unit dies, generate one
-                            body part.
+                            the player gains one body part. Some cards cost body
+                            parts to play. When killing an enemy unit in combat
+                            with one of your units or when an own unit dies,
+                            generate one body part.
                         </li>
                         <li>
                             Units must be attacked first, only when there are no
-                            units the leader can be attacked. Supporters can not
-                            be attacked.
+                            units the leader can be attacked. Supporters, Spells
+                            or cards on the revive slot can not be attacked.
                         </li>
                         <li>
-                            Zombies can be revived from graveyard. When a unit
-                            is revived it is placed on the revive-slot. In the
-                            next round it is placed on the board.
+                            Zombies with costs of 3 and lower can be revived
+                            from graveyard. When a unit is revived it is placed
+                            on the revive slot. In the next round it is placed
+                            on the board.
                         </li>
                         <li>
                             A unit can not attack in the same round it has been
@@ -302,8 +226,17 @@ export default function Actions() {
                             by one.
                         </li>
                         <li>
-                            Supporters can be stacked. Only the top supporter
-                            can be active, all others are inactive.
+                            Instead of playing a card from hand you can also
+                            sacrifice one card per round. In this case the card
+                            is moved into the graveyard and half the units costs
+                            (rounded up) + 1 can be added as resources. So 0
+                            cost = 1 body part, 1 cost = 2 body parts, 2 costs =
+                            2 body parts, 3 costs = 3 body parts, 4 costs = 3
+                            body parts, ....
+                        </li>
+                        <li>
+                            Supporters are leveled up by performing specific
+                            tasks, each level up gives more advantages.
                         </li>
                     </ul>
                 </Box>

@@ -1,11 +1,11 @@
 import Box from "@mui/material/Box";
-import Counter from "./Counter";
 import Actions from "./Actions";
 import Hand from "./Hand";
 import { useAtom, useAtomValue } from "jotai";
 import {
     cardsAtom,
     cardsInDeckAtom,
+    cardsInExileAtom,
     cardsInGraveyardAtom,
     cardsInHandAtom,
     cardsInPlayAtom,
@@ -13,7 +13,6 @@ import {
     playerHpAtom,
     playerResourceAtom,
     spellsInPlayAtom,
-    supportersInPlayAtom,
     unitsInPlayAtom,
 } from "../data/atoms";
 import Grid from "@mui/material/Grid";
@@ -24,6 +23,7 @@ import ExtendedCard from "../types/extended-card";
 import FirstSlots from "./FirstSlots";
 import SecondSlots from "./SecondSlots";
 import Log from "./Log";
+import CounterWithTitle from "./CounterWithTitle";
 
 interface BoardSideProps {
     side: "top" | "bottom";
@@ -35,9 +35,9 @@ export default function BoardSide({ side }: BoardSideProps) {
     const cardsInGraveyard = useAtomValue(cardsInGraveyardAtom);
     const cardsInPlay = useAtomValue(cardsInPlayAtom);
     const unitsInPlay = useAtomValue(unitsInPlayAtom);
-    const supportersInPlay = useAtomValue(supportersInPlayAtom);
     const spellsInPlay = useAtomValue(spellsInPlayAtom);
     const cardsInRevive = useAtomValue(cardsInReviveAtom);
+    const cardsInExile = useAtomValue(cardsInExileAtom);
     const [cards, setCards] = useAtom(cardsAtom);
     const [playerHp, setPlayerHp] = useAtom(playerHpAtom);
     const [playerResource, setPlayerResource] = useAtom(playerResourceAtom);
@@ -92,16 +92,16 @@ export default function BoardSide({ side }: BoardSideProps) {
                             marginBottom: 2,
                         }}
                     >
-                        <Counter
+                        <CounterWithTitle
                             name={"HP"}
                             counter={playerHp}
                             setCounter={setPlayerHp}
-                        ></Counter>
-                        <Counter
+                        />
+                        <CounterWithTitle
                             name={"Body Parts"}
                             counter={playerResource}
                             setCounter={setPlayerResource}
-                        ></Counter>
+                        />
                     </Paper>
                     <Log />
                 </Grid>
@@ -116,13 +116,13 @@ export default function BoardSide({ side }: BoardSideProps) {
                         <FirstSlots
                             leaderCard={leaderCard}
                             unitsInPlay={unitsInPlay}
-                            cardsInGraveyard={cardsInGraveyard}
+                            cardsInDeck={cardsInDeck}
                         />
                         <SecondSlots
-                            supportersInPlay={supportersInPlay}
                             spellsInPlay={spellsInPlay}
                             cardsInRevive={cardsInRevive}
-                            cardsInDeck={cardsInDeck}
+                            cardsInGraveyard={cardsInGraveyard}
+                            cardsInExile={cardsInExile}
                         />
                     </Box>
                 </Grid>

@@ -2,9 +2,14 @@ import Box from "@mui/material/Box";
 import Paper from "@mui/material/Paper";
 import { useCallback, useState } from "react";
 import Modal from "@mui/material/Modal";
-import { Button, TextField, Typography } from "@mui/material";
+import { Button, TextField, Tooltip, Typography } from "@mui/material";
 import ExtendedCard from "../types/extended-card";
-import { cardsAtom, originalCards, roundAtom } from "../data/atoms";
+import {
+    cardsAtom,
+    originalCards,
+    reviveCounterAtom,
+    roundAtom,
+} from "../data/atoms";
 import { useAtom } from "jotai";
 
 interface GameCardProps {
@@ -16,6 +21,7 @@ type Location = "deck" | "graveyard" | "revive" | "hand" | "board" | "exile";
 export default function GameCard({ card }: GameCardProps) {
     const [cards, setCards] = useAtom(cardsAtom);
     const [round, setRound] = useAtom(roundAtom);
+    const [reviveCounter, setReviveCounter] = useAtom(reviveCounterAtom);
     const [atk, setAtk] = useState<number>(card.attack ?? 0);
     const [hp, setHp] = useState<number>(card.defense ?? 0);
 
@@ -32,10 +38,6 @@ export default function GameCard({ card }: GameCardProps) {
 
         case "Unit":
             backgroundColor = "lightslategray";
-            break;
-
-        case "Supporter":
-            backgroundColor = "lightgreen";
             break;
 
         case "Boss":
@@ -187,8 +189,12 @@ export default function GameCard({ card }: GameCardProps) {
         (location: Location) => {
             updateLocation(location);
             handleClose();
+
+            if (location === "revive") {
+                setReviveCounter(reviveCounter + 1);
+            }
         },
-        [updateLocation, handleClose]
+        [updateLocation, handleClose, setReviveCounter, reviveCounter]
     );
 
     const onUpdateStats = useCallback(
@@ -276,14 +282,15 @@ export default function GameCard({ card }: GameCardProps) {
                             Move to Deck
                         </Button>
                     )}
-                    {!card.inGraveyard ? (
+                    {!card.inGraveyard && (
                         <Button
                             variant="contained"
                             onClick={() => onLocationChange("graveyard")}
                         >
                             Move to Graveyard
                         </Button>
-                    ) : (
+                    )}
+                    {!card.inRevive && (
                         <Button
                             variant="contained"
                             onClick={() => onLocationChange("revive")}
@@ -306,6 +313,16 @@ export default function GameCard({ card }: GameCardProps) {
                         >
                             Move to Hand
                         </Button>
+                    )}
+                    {card.inHand && (
+                        <Tooltip title="Add half the cards cost (rounded up) + 1 to your resources">
+                            <Button
+                                variant="contained"
+                                onClick={() => onLocationChange("graveyard")}
+                            >
+                                Sacrifice
+                            </Button>
+                        </Tooltip>
                     )}
                     {(card.type === "Unit" || card.type === "Boss") && (
                         <>

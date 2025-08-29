@@ -1,41 +1,21 @@
 import Paper from "@mui/material/Paper";
-import Box from "@mui/material/Box";
-import IconButton from "@mui/material/IconButton";
-import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
-import Backdrop from "@mui/material/Backdrop";
-import { useState } from "react";
-import Hand from "./Hand";
 import ExtendedCard from "../types/extended-card";
-import GameCard from "./GameCard";
+import SlotContent from "./SlotContent";
+import SupportSlotContent from "./SupportSlotContent";
 
 interface SlotProps {
     slotName: string;
-    type:
-        | "Leader"
-        | "Unit"
-        | "Graveyard"
-        | "Supporter"
-        | "Spell"
-        | "Revive"
-        | "Deck";
     card?: ExtendedCard;
     cards?: ExtendedCard[];
+    isSupportSlot?: boolean;
 }
 
-export default function Slot({ slotName, type, card, cards }: SlotProps) {
-    const [open, setOpen] = useState(false);
-    const handleClose = () => {
-        setOpen(false);
-    };
-    const handleOpen = () => {
-        setOpen(true);
-    };
-
-    const cardsOrEmpty = cards || [];
-
-    const canCheck =
-        type === "Deck" || type === "Graveyard" || type === "Supporter";
-
+export default function Slot({
+    slotName,
+    card,
+    cards,
+    isSupportSlot = false,
+}: SlotProps) {
     return (
         <Paper
             sx={{
@@ -46,34 +26,11 @@ export default function Slot({ slotName, type, card, cards }: SlotProps) {
                 justifyContent: "center",
             }}
         >
-            <Box
-                sx={{
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                }}
-            >
-                {canCheck && (
-                    <IconButton onClick={handleOpen}>
-                        <RemoveRedEyeIcon />
-                    </IconButton>
-                )}
-                <Box sx={{ textAlign: "center", padding: "8px 0" }}>
-                    {cards ? `${slotName} (${cardsOrEmpty.length})` : slotName}
-                </Box>
-            </Box>
-
-            {card && (
-                <Box sx={{ display: "flex", justifyContent: "center" }}>
-                    <GameCard card={card} />
-                </Box>
+            {isSupportSlot ? (
+                <SupportSlotContent />
+            ) : (
+                <SlotContent slotName={slotName} card={card} cards={cards} />
             )}
-
-            <Backdrop sx={{ zIndex: 10 }} open={open} onClick={handleClose}>
-                <Box sx={{ height: "99vh", padding: 1, overflow: "auto" }}>
-                    <Hand cards={cardsOrEmpty} />
-                </Box>
-            </Backdrop>
         </Paper>
     );
 }

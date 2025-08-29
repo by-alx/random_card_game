@@ -1,24 +1,20 @@
 import Box from "@mui/material/Box";
 import Slot from "./Slot";
 import ExtendedCard from "../types/extended-card";
-import { useAtomValue } from "jotai";
-import { supporterIndexAtom } from "../data/atoms";
 
 interface SecondSlotsProps {
-    supportersInPlay: ExtendedCard[];
     spellsInPlay: ExtendedCard[];
     cardsInRevive: ExtendedCard[];
-    cardsInDeck: ExtendedCard[];
+    cardsInGraveyard: ExtendedCard[];
+    cardsInExile: ExtendedCard[];
 }
 
 export default function SecondSlots({
-    supportersInPlay,
     spellsInPlay,
     cardsInRevive,
-    cardsInDeck,
+    cardsInGraveyard,
+    cardsInExile,
 }: SecondSlotsProps) {
-    const supporterIndex = useAtomValue(supporterIndexAtom);
-
     return (
         <Box
             sx={{
@@ -27,43 +23,14 @@ export default function SecondSlots({
                 gap: 2,
             }}
         >
-            <Slot
-                slotName="Supporter"
-                type="Supporter"
-                card={supportersInPlay[supporterIndex]}
-                cards={supportersInPlay}
-            ></Slot>
-            <Slot
-                slotName="Spell Slot 1"
-                type="Spell"
-                card={spellsInPlay[0]}
-            ></Slot>
-            <Slot
-                slotName="Spell Slot 2"
-                type="Spell"
-                card={spellsInPlay[1]}
-            ></Slot>
-            <Slot
-                slotName="Spell Slot 3"
-                type="Spell"
-                card={spellsInPlay[2]}
-            ></Slot>
-            <Slot
-                slotName="Spell Slot 4"
-                type="Spell"
-                card={spellsInPlay[3]}
-            ></Slot>
-            <Slot
-                slotName="Revive Slot 1"
-                type="Revive"
-                card={cardsInRevive[0]}
-            ></Slot>
-            <Slot
-                slotName="Revive Slot 2"
-                type="Revive"
-                card={cardsInRevive[1]}
-            ></Slot>
-            <Slot slotName="Deck" type="Deck" cards={cardsInDeck}></Slot>
+            <Slot slotName="Supporter" isSupportSlot></Slot>
+            <Slot slotName="Spell Slot 1" card={spellsInPlay[0]}></Slot>
+            <Slot slotName="Spell Slot 2" card={spellsInPlay[1]}></Slot>
+            <Slot slotName="Spell Slot 3" card={spellsInPlay[2]}></Slot>
+            <Slot slotName="Spell Slot 4" card={spellsInPlay[3]}></Slot>
+            <Slot slotName="Revive Slot" card={cardsInRevive[0]}></Slot>
+            <Slot slotName="Graveyard" cards={cardsInGraveyard}></Slot>
+            <Slot slotName="Exile" cards={cardsInExile}></Slot>
         </Box>
     );
 }
