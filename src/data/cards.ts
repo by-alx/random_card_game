@@ -80,7 +80,7 @@ export const getCards = (): Card[] => {
             tags: ["Zombie"],
             cost: [1],
             attack: 2,
-            defense: 3,
+            defense: 2,
             quantity: 2
         },
         {
