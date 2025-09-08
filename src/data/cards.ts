@@ -10,7 +10,7 @@ export const getCards = (): Card[] => {
             tags: ["Zombie"],
             cost: [0,2],
             attack: 1,
-            defense: 2,
+            defense: 3,
             quantity: 2
         },
         {
@@ -20,7 +20,7 @@ export const getCards = (): Card[] => {
             tags: ["Zombie"],
             cost: [0,2],
             attack: 2,
-            defense: 1,
+            defense: 2,
             quantity: 2
         },
         {
@@ -39,8 +39,8 @@ export const getCards = (): Card[] => {
             type: "Unit",
             tags: ["Zombie"],
             cost: [0],
-            attack: 2,
-            defense: 2,
+            attack: 3,
+            defense: 3,
             quantity: 2
         },
         {
@@ -50,7 +50,7 @@ export const getCards = (): Card[] => {
             tags: ["Zombie"],
             cost: [0],
             attack: 1,
-            defense: 2,
+            defense: 4,
             quantity: 2
         },
         {
@@ -80,12 +80,12 @@ export const getCards = (): Card[] => {
             tags: ["Zombie"],
             cost: [1],
             attack: 2,
-            defense: 2,
+            defense: 3,
             quantity: 2
         },
         {
             name: "Trebuchet",
-            description: "On Spawn: Create an explosive torso in the enemy deck (once this is drawn it explodes and deals 1 damage to 2 random enemy units)",
+            description: "On Spawn: Create an explosive torso in the enemy deck (once this is drawn it explodes and deals 1 damage to 2 random enemy units). On Death: Exile me",
             type: "Unit",
             tags: ["Machine"],
             cost: [0],
@@ -115,12 +115,12 @@ export const getCards = (): Card[] => {
         },
         {
             name: "Flesh Ripper",
-            description: "On Attack: Gains 1 body part",
+            description: "On Attack: Gain 1 body part",
             type: "Unit",
             tags: ["Zombie"],
             cost: [1],
             attack: 3,
-            defense: 2,
+            defense: 3,
             quantity: 2
         },
         {
@@ -129,17 +129,17 @@ export const getCards = (): Card[] => {
             type: "Unit",
             tags: ["Zombie"],
             cost: [0],
-            attack: 1,
-            defense: 1,
+            attack: 2,
+            defense: 2,
             quantity: 2
         },
         {
             name: "Powder Monkey",
-            description: "On Death: Deal 1 damage to all units and exile me",
+            description: "On Death: Deal 2 damage to all units and exile me",
             type: "Unit",
             tags: ["Zombie"],
             cost: [2],
-            attack: 2,
+            attack: 3,
             defense: 2,
             quantity: 2
         },
@@ -149,8 +149,8 @@ export const getCards = (): Card[] => {
             type: "Unit",
             tags: ["Zombie"],
             cost: [3],
-            attack: 3,
-            defense: 4,
+            attack: 2,
+            defense: 5,
             quantity: 2
         },
         {
@@ -169,8 +169,8 @@ export const getCards = (): Card[] => {
             type: "Unit",
             tags: ["Zombie"],
             cost: [1],
-            attack: 1,
-            defense: 1,
+            attack: 2,
+            defense: 2,
             quantity: 2
         },
         {
@@ -203,7 +203,7 @@ export const getCards = (): Card[] => {
         },
         {
             name: "Ground Fog",
-            description: "Increases the HP of your units by 1, last 2 rounds",
+            description: "Increases the HP of your units by 1, lasts 2 rounds",
             type: "Spell",
             tags: [""],
             cost: [1],
@@ -236,13 +236,13 @@ export const getCards = (): Card[] => {
         },
         {
             name: "Meat Grinder",
-            description: 'Each round a body part can be thrown into the "Meat Grinder". After 5 rounds (or when activated) create a "Limb Monster (2/2)" (+1/+1) for each body part in the "Meat Grinder"',
+            description: 'Each round a body part can be thrown into the "Meat Grinder". After 3 rounds (or when activated) create a "Limb Monster (2/2)" (+1/+1) for each body part in the "Meat Grinder"',
             type: "Spell",
             tags: [],
             cost: [2],
             quantity: 2,
             counter: 0,
-            duration: 5
+            duration: 3
         },
         {
             name: "Harvest flesh",
