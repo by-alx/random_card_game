@@ -124,6 +124,28 @@ export default function Actions() {
         }
     }, [getCardByName, setCards, cards]);
 
+    const addLimbMonster = useCallback(() => {
+        const newCard = getCardByName("Limb Monster");
+
+        if (newCard) {
+            const extendedCards = [
+                ...cards,
+                {
+                    ...newCard,
+                    index: cards.length,
+                    inDeck: false,
+                    inGraveyard: false,
+                    inHand: false,
+                    inPlay: true,
+                    inExile: false,
+                    inRevive: false,
+                },
+            ];
+
+            setCards(extendedCards);
+        }
+    }, [getCardByName, setCards, cards]);
+
     const onDraw = useCallback(() => {
         drawCards(1);
         setDrawCounter(drawCounter + 1);
@@ -150,6 +172,9 @@ export default function Actions() {
                 </Button>
                 <Button variant="contained" onClick={addTorso}>
                     Add Torso
+                </Button>
+                <Button variant="contained" onClick={addLimbMonster}>
+                    Add Limb Monster
                 </Button>
                 <Button variant="contained" onClick={handleOpenRules}>
                     Rules

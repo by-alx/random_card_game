@@ -7,4 +7,6 @@ export default interface Card {
     attack?: number;
     defense?: number;
     quantity: number;
+    duration?: number;
+    counter?: number;
 }

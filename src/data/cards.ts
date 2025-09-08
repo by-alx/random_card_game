@@ -104,6 +104,16 @@ export const getCards = (): Card[] => {
             quantity: 0
         },
         {
+            name: "Limb Monster",
+            description: "Each round reduce my HP by 1. On Death: Exile me and gain 2 body parts.",
+            type: "Unit",
+            tags: ["Zombie"],
+            cost: [0],
+            attack: 2,
+            defense: 2,
+            quantity: 0
+        },
+        {
             name: "Flesh Ripper",
             description: "On Attack: Gains 1 body part",
             type: "Unit",
@@ -197,7 +207,8 @@ export const getCards = (): Card[] => {
             type: "Spell",
             tags: [""],
             cost: [1],
-            quantity: 2
+            quantity: 2,
+            duration: 2
         },
         {
             name: "Lending a hand",
@@ -222,6 +233,16 @@ export const getCards = (): Card[] => {
             tags: [],
             cost: [1],
             quantity: 2
+        },
+        {
+            name: "Meat Grinder",
+            description: 'Each round a body part can be thrown into the "Meat Grinder". After 5 rounds (or when activated) create a "Limb Monster (2/2)" (+1/+1) for each body part in the "Meat Grinder"',
+            type: "Spell",
+            tags: [],
+            cost: [2],
+            quantity: 2,
+            counter: 0,
+            duration: 5
         },
         {
             name: "Harvest flesh",
