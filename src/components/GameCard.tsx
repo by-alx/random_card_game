@@ -1,6 +1,6 @@
 import Box from "@mui/material/Box";
 import Paper from "@mui/material/Paper";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import Modal from "@mui/material/Modal";
 import { Button, TextField, Tooltip, Typography } from "@mui/material";
 import ExtendedCard from "../types/extended-card";
@@ -205,6 +205,13 @@ export default function GameCard({ card }: GameCardProps) {
         updateStats();
         handleClose();
     }, [updateStats, handleClose]);
+
+    useEffect(() => {
+        if (card.inPlay && card.counter != null) {
+            setDuration(duration - 1);
+            updateStats();
+        }
+    }, [round.count]);
 
     return (
         <>
