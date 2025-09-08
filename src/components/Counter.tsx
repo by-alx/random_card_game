@@ -1,14 +1,18 @@
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import ButtonGroup from "@mui/material/ButtonGroup";
-import { useCallback } from "react";
+import { PropsWithChildren, useCallback } from "react";
 
-interface CounterProps {
+interface CounterProps extends PropsWithChildren {
     counter: number;
     setCounter: (num: number) => void;
 }
 
-export default function Counter({ counter, setCounter }: CounterProps) {
+export default function Counter({
+    counter,
+    setCounter,
+    children,
+}: CounterProps) {
     const increment = useCallback(() => {
         setCounter(counter + 1);
     }, [counter, setCounter]);
@@ -20,6 +24,7 @@ export default function Counter({ counter, setCounter }: CounterProps) {
         <Box sx={{ display: "flex", justifyContent: "center" }}>
             <ButtonGroup variant="contained">
                 <Button onClick={decrement}>-</Button>
+                {children}
                 <Button onClick={increment}>+</Button>
             </ButtonGroup>
         </Box>

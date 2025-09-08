@@ -11,6 +11,7 @@ import {
     roundAtom,
 } from "../data/atoms";
 import { useAtom } from "jotai";
+import Counter from "./Counter";
 
 interface GameCardProps {
     card: ExtendedCard;
@@ -24,6 +25,8 @@ export default function GameCard({ card }: GameCardProps) {
     const [reviveCounter, setReviveCounter] = useAtom(reviveCounterAtom);
     const [atk, setAtk] = useState<number>(card.attack ?? 0);
     const [hp, setHp] = useState<number>(card.defense ?? 0);
+    const [duration, setDuration] = useState<number>(card.duration ?? 0);
+    const [counter, setCounter] = useState<number>(card.counter ?? 0);
 
     const [open, setOpen] = useState(false);
     const handleOpen = () => setOpen(true);
@@ -83,6 +86,8 @@ export default function GameCard({ card }: GameCardProps) {
                                 inRevive: false,
                                 attack: originalCard?.attack,
                                 defense: originalCard?.defense,
+                                duration: originalCard?.duration,
+                                counter: originalCard?.counter,
                                 cost: (card?.cost ?? []).map(
                                     (cost) => cost + 1
                                 ),
@@ -162,28 +167,27 @@ export default function GameCard({ card }: GameCardProps) {
         [cards, setCards, originalCards, setRound, round, card]
     );
 
-    const updateStats = useCallback(
-        (atk: number, hp: number) => {
-            const updatedCards = cards.map((c) => {
-                if (c.index === card.index) {
-                    let cardProps = {
-                        attack: atk,
-                        defense: hp,
-                    };
+    const updateStats = useCallback(() => {
+        const updatedCards = cards.map((c) => {
+            if (c.index === card.index) {
+                let cardProps = {
+                    ...(card.attack != null && { attack: atk }),
+                    ...(card.defense != null && { defense: hp }),
+                    ...(card.duration != null && { duration: duration }),
+                    ...(card.counter != null && { counter: counter }),
+                };
 
-                    return {
-                        ...card,
-                        ...cardProps,
-                    };
-                } else {
-                    return c;
-                }
-            });
+                return {
+                    ...card,
+                    ...cardProps,
+                };
+            } else {
+                return c;
+            }
+        });
 
-            setCards(updatedCards);
-        },
-        [cards, setCards]
-    );
+        setCards(updatedCards);
+    }, [cards, setCards, atk, hp, duration, counter]);
 
     const onLocationChange = useCallback(
         (location: Location) => {
@@ -197,13 +201,10 @@ export default function GameCard({ card }: GameCardProps) {
         [updateLocation, handleClose, setReviveCounter, reviveCounter]
     );
 
-    const onUpdateStats = useCallback(
-        (atk: number, hp: number) => {
-            updateStats(atk, hp);
-            handleClose();
-        },
-        [updateStats, handleClose]
-    );
+    const onUpdateStats = useCallback(() => {
+        updateStats();
+        handleClose();
+    }, [updateStats, handleClose]);
 
     return (
         <>
@@ -224,7 +225,10 @@ export default function GameCard({ card }: GameCardProps) {
                 onClick={openModal}
             >
                 <Box sx={{ display: "flex", justifyContent: "space-between" }}>
-                    <Box sx={{ fontWeight: "bold" }}>{card.name}</Box>
+                    <Box sx={{ fontWeight: "bold" }}>
+                        {card.name}{" "}
+                        {card.duration != null && `(${card.duration})`}
+                    </Box>
                     <Box>{(card?.cost ?? []).join("/")}</Box>
                 </Box>
                 <Box
@@ -239,6 +243,7 @@ export default function GameCard({ card }: GameCardProps) {
                 <Box sx={{ display: "flex", justifyContent: "space-between" }}>
                     <Box>{card.attack}</Box>
                     {(card?.tags ?? []).join(", ")}
+                    {card.counter != null && `(Counter: ${card.counter})`}
                     <Box>{card.defense}</Box>
                 </Box>
             </Paper>
@@ -326,39 +331,58 @@ export default function GameCard({ card }: GameCardProps) {
                     )}
                     {(card.type === "Unit" || card.type === "Boss") && (
                         <>
-                            <Box sx={{ display: "flex", marginTop: 2 }}>
-                                <TextField
-                                    label="ATK"
-                                    variant="filled"
-                                    value={atk}
-                                    onChange={(
-                                        event: React.ChangeEvent<HTMLInputElement>
-                                    ) => {
-                                        setAtk(
-                                            Number(event.target.value) ?? null
-                                        );
-                                    }}
-                                />
-                                <TextField
-                                    label="HP"
-                                    variant="filled"
-                                    value={hp}
-                                    onChange={(
-                                        event: React.ChangeEvent<HTMLInputElement>
-                                    ) => {
-                                        setHp(
-                                            Number(event.target.value) ?? null
-                                        );
-                                    }}
-                                />
+                            <Box sx={{ display: "flex" }}>
+                                <Counter counter={atk} setCounter={setAtk}>
+                                    <TextField
+                                        label="ATK"
+                                        variant="filled"
+                                        value={atk}
+                                    />
+                                </Counter>
                             </Box>
-                            <Button
-                                variant="contained"
-                                onClick={() => onUpdateStats(atk, hp)}
-                            >
-                                Save Stats
-                            </Button>
+                            <Box sx={{ display: "flex" }}>
+                                <Counter counter={hp} setCounter={setHp}>
+                                    <TextField
+                                        label="HP"
+                                        variant="filled"
+                                        value={hp}
+                                    />
+                                </Counter>
+                            </Box>
                         </>
+                    )}
+                    {card.duration != null && (
+                        <Box sx={{ display: "flex" }}>
+                            <Counter
+                                counter={duration}
+                                setCounter={setDuration}
+                            >
+                                <TextField
+                                    label="Duration"
+                                    variant="filled"
+                                    value={duration}
+                                />
+                            </Counter>
+                        </Box>
+                    )}
+                    {card.counter != null && (
+                        <Box sx={{ display: "flex" }}>
+                            <Counter counter={counter} setCounter={setCounter}>
+                                <TextField
+                                    label="Counter"
+                                    variant="filled"
+                                    value={counter}
+                                />
+                            </Counter>
+                        </Box>
+                    )}
+                    {(card.type === "Unit" ||
+                        card.type === "Boss" ||
+                        card.duration != null ||
+                        card.counter != null) && (
+                        <Button variant="contained" onClick={onUpdateStats}>
+                            Save Stats
+                        </Button>
                     )}
                 </Box>
             </Modal>
