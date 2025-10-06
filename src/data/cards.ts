@@ -227,6 +227,14 @@ export const getCards = (): Card[] => {
             quantity: 2
         },
         {
+            name: "Living Armor",
+            description: "Permanently increase the HP of a unit by 1, after this unit takes damage heal it by 1",
+            type: "Spell",
+            tags: [],
+            cost: [2],
+            quantity: 2
+        },
+        {
             name: "Decay",
             description: "Reduce the ATK of all enemy units by 1 for the rest of the round",
             type: "Spell",
