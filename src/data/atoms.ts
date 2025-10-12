@@ -25,7 +25,7 @@ cards.forEach((card) => {
 });
 
 export const roundAtom = atom<Log>({count: 0, isRunning: false, log: []});
-export const playerHpAtom = atom(20);
+export const playerHpAtom = atom(10);
 export const playerResourceAtom = atom(0);
 export const drawCounterAtom = atom(0);
 export const reviveCounterAtom = atom(0);

@@ -109,8 +109,8 @@ export const getCards = (): Card[] => {
             type: "Unit",
             tags: ["Zombie"],
             cost: [0],
-            attack: 2,
-            defense: 2,
+            attack: 3,
+            defense: 3,
             quantity: 0
         },
         {
@@ -228,10 +228,10 @@ export const getCards = (): Card[] => {
         },
         {
             name: "Living Armor",
-            description: "Permanently increase the HP of a unit by 1, after this unit takes damage heal it by 1",
+            description: "Permanently increase the HP of a unit by 1, after this unit takes damage heal it by half the amount (rounded up)",
             type: "Spell",
             tags: [],
-            cost: [2],
+            cost: [3],
             quantity: 2
         },
         {
@@ -244,7 +244,7 @@ export const getCards = (): Card[] => {
         },
         {
             name: "Meat Grinder",
-            description: 'Each round a body part can be thrown into the "Meat Grinder". After 3 rounds (or when activated) create a "Limb Monster (2/2)" (+1/+1) for each body part in the "Meat Grinder"',
+            description: 'Each round a body part can be thrown into the "Meat Grinder". After 3 rounds (or when activated) create a "Limb Monster (3/3)" (+1/+1) for each body part in the "Meat Grinder"',
             type: "Spell",
             tags: [],
             cost: [2],
